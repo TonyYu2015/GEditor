@@ -1,17 +1,16 @@
 import Quill from './register';
-import {
-	DIVIDER_BLOT_NAME
-} from './formats/BLOT_NAMES';
-import PageBreak from "./modules/PageBreak";
+// import Quill from 'quill';
+// import {
+// 	DIVIDER_BLOT_NAME
+// } from './formats/BLOT_NAMES';
 import QUEUE from './idleQueue';
-import CustomImageSpec from './formats/CustomImageSpec'
-import { writeUserLog } from '../../../utils/request';
-import html2canvas from 'html2canvas';
-import { save2Gfs } from './apiHooks';
-import Axios from 'axios';
+// import CustomImageSpec from './formats/CustomImageSpec'
+// import html2canvas from 'html2canvas';
+// import { save2Gfs } from './apiHooks';
+// import Axios from 'axios';
 
 let Delta = Quill.import('delta');
-const Image = Quill.import('formats/image');
+// const Image = Quill.import('formats/image');
 const BlockEmbed = Quill.import('blots/block/embed');
 
 export default class ReportEditor {
@@ -41,94 +40,99 @@ export default class ReportEditor {
 			container,
 			{
 				modules: {
-					table: false,
+					// table: false,
 					pageBreak: true,
-					imageDrop:true,
-					formatBrush: true,
-					freeText: true,
-					fullWidth: true,
+					freeContainer: true,
+					// imageDrop:true,
+					// formatBrush: true,
+					// freeText: true,
+					// fullWidth: true,
 					layout: true,
-					renderRC: {
-						team_id: userInfo.team_list[0].team_id,
-						operation
-					},
-					customSet: {
-						team_id: userInfo.team_list[0].team_id,
-						operation
-					},
+					// renderRC: {
+					// 	team_id: userInfo.team_list[0].team_id,
+					// 	operation
+					// },
+					// customSet: {
+					// 	team_id: userInfo.team_list[0].team_id,
+					// 	operation
+					// },
 
 					// imageResize:{
 
 					// },
-					blotFormatter:{
-						specs: [ CustomImageSpec ],
-					},
-					'better-table': {
-						operationMenu: {
-							items: {
-								insertColumnRight: {
-									text: "向右插入一列"
-								},
-								insertColumnLeft: {
-									text: "向左插入一列"
-								},
-								insertRowUp: {
-									text: "向上插入一行"
-								},
-								insertRowDown: {
-									text: "向下插入一列"
-								},
-								// mergeCells:{
-								// 	text: "合并单元格"
-								// },
-								// unmergeCells: {
-								// 	text: "拆分单元格"
-								// },
-								mergeCells:false,
-								unmergeCells: false,
-								deleteColumn: {
-									text: "删除选中列"
-								},
-								deleteRow: {
-									text: "删除选中行"
-								},
-								deleteTable: {
-									text: "删除表格"
-								},
-								// changestyle: {
-								// 	text: "修改样式",
-								// 	handler() {}
-								// },
-							},
-						}
-					},
+					// blotFormatter:{
+					// 	specs: [ CustomImageSpec ],
+					// },
+					// 'better-table': {
+					// 	operationMenu: {
+					// 		items: {
+					// 			insertColumnRight: {
+					// 				text: "向右插入一列"
+					// 			},
+					// 			insertColumnLeft: {
+					// 				text: "向左插入一列"
+					// 			},
+					// 			insertRowUp: {
+					// 				text: "向上插入一行"
+					// 			},
+					// 			insertRowDown: {
+					// 				text: "向下插入一列"
+					// 			},
+					// 			// mergeCells:{
+					// 			// 	text: "合并单元格"
+					// 			// },
+					// 			// unmergeCells: {
+					// 			// 	text: "拆分单元格"
+					// 			// },
+					// 			mergeCells:false,
+					// 			unmergeCells: false,
+					// 			deleteColumn: {
+					// 				text: "删除选中列"
+					// 			},
+					// 			deleteRow: {
+					// 				text: "删除选中行"
+					// 			},
+					// 			deleteTable: {
+					// 				text: "删除表格"
+					// 			},
+					// 			// changestyle: {
+					// 			// 	text: "修改样式",
+					// 			// 	handler() {}
+					// 			// },
+					// 		},
+					// 	}
+					// },
 					toolbar: {
 						container: toolbar,
 						handlers: {
-							divider() {
-								const quill = this.quill;
-								let range = quill.getSelection();
-								quill.updateContents([
-									{retain: range.index || 1},
-									{insert: { [DIVIDER_BLOT_NAME]: true }},
-								])
-							},
-							export: function() {
-							},
-							catalogue: function() {
-								const quill = this.quill;
-								let delta = quill.getContents();
-								let dom = document.getElementById('editor-wrapper')
-								_this.updateCatalogue(delta,dom)
-							},
-							formatBrush: function() {
-								const formatBrush = this.quill.getModule('formatBrush');
-								formatBrush.toogleFormat();
-							},
-							customSet: function() {
-								const customSet = this.quill.getModule("customSet");
-								customSet.saveSet();
-							},
+							// divider() {
+							// 	const quill = this.quill;
+							// 	let range = quill.getSelection();
+							// 	quill.updateContents([
+							// 		{retain: range.index || 1},
+							// 		{insert: { [DIVIDER_BLOT_NAME]: true }},
+							// 	])
+							// },
+							// export: function() {
+							// },
+							// catalogue: function() {
+							// 	const quill = this.quill;
+							// 	let delta = quill.getContents();
+							// 	let dom = document.getElementById('editor-wrapper')
+							// 	_this.updateCatalogue(delta,dom)
+							// },
+							// formatBrush: function() {
+							// 	const formatBrush = this.quill.getModule('formatBrush');
+							// 	formatBrush.toogleFormat();
+							// },
+							// customSet: function() {
+							// 	const customSet = this.quill.getModule("customSet");
+							// 	customSet.saveSet();
+							// },
+							save() {
+								let delta = this.quill.getContents();
+								localStorage.setItem("delta", JSON.stringify(delta));
+							}
 						}
 					},
 					history: {
@@ -210,20 +214,17 @@ export default class ReportEditor {
 		}
 	}
 
-	renderReport() {
+	renderReport(newDelta) {
 		const quill = this.quill;
 		quill.isLoadingRender = true;
-		quill.setContents(new Delta(newDelta), Quill.sources.API);
+		quill.updateContents(new Delta().retain(1).concat(newDelta), Quill.sources.API);
+		quill.scroll.children.head.remove();
 		quill.isLoadingRender = false;
-		if(quill.scroll.reportInfo.new) {
-			let refreshModule = quill.getModule("refresh");
-			refreshModule.refreshAll();
-		}
 	}
 
 	addNewPage() {
 		const pageBreak = this.quill.getModule('pageBreak');
-		pageBreak.genOnePage();
+		pageBreak.genOnePage({index: 1, pageNum: 1});
 		this.setFirstPageRenderEnd(true);
 	}
 
@@ -317,105 +318,105 @@ export default class ReportEditor {
 	/**
 	 * 原图大小
 	 */
-	cutFirstPageAsThumbnail(callback) {
-		const firstPageDom = this.quill.scroll.children.head.domNode;
+	// cutFirstPageAsThumbnail(callback) {
+	// 	const firstPageDom = this.quill.scroll.children.head.domNode;
 
-		this.replaceNotsameOriginUrl2Base64(() => {
-			html2canvas(firstPageDom)
-			.then(canvas => {
-				// this.quill.scroll.domNode.parentNode.appendChild(canvas);
-				this.transferCanvas(canvas, 15, callback);
-			})
-			.catch(err => {
-				console.error('thumbnail error', err);
-			})
-		});
-	}
+	// 	this.replaceNotsameOriginUrl2Base64(() => {
+	// 		html2canvas(firstPageDom)
+	// 		.then(canvas => {
+	// 			// this.quill.scroll.domNode.parentNode.appendChild(canvas);
+	// 			this.transferCanvas(canvas, 15, callback);
+	// 		})
+	// 		.catch(err => {
+	// 			console.error('thumbnail error', err);
+	// 		})
+	// 	});
+	// }
 
-	replaceNotsameOriginUrl2Base64(callback) {
-		const imgBlotArr = this.quill.scroll.children.head.descendants(Image);
-		let domArr = [];
-		imgBlotArr.forEach(blot => {
-			if(!this.isSameOrigin(blot.domNode.src)) {
-				domArr.push(blot.domNode);
-			}
-		});
-		if(domArr.length === 0) {
-			callback();
-		} else {
-			Promise.all(domArr.map(dom => Axios(dom.src, {
-				responseType: "blob"
-			})))
-			.then(res => {
-				return res.map(m =>  m.data);
-			})
-			.then(blobs => {
-				for(let i = 0; i < blobs.length; i++){
-					let reader = new FileReader();
-					reader.onload = function() {
-						domArr[i].src = `data:image/jpeg;base64,${this.result.split(',')[1]}`;
-						if(i === blobs.length - 1) {
-							callback();
-						}
-					}
+	// replaceNotsameOriginUrl2Base64(callback) {
+	// 	const imgBlotArr = this.quill.scroll.children.head.descendants(Image);
+	// 	let domArr = [];
+	// 	imgBlotArr.forEach(blot => {
+	// 		if(!this.isSameOrigin(blot.domNode.src)) {
+	// 			domArr.push(blot.domNode);
+	// 		}
+	// 	});
+	// 	if(domArr.length === 0) {
+	// 		callback();
+	// 	} else {
+	// 		Promise.all(domArr.map(dom => Axios(dom.src, {
+	// 			responseType: "blob"
+	// 		})))
+	// 		.then(res => {
+	// 			return res.map(m =>  m.data);
+	// 		})
+	// 		.then(blobs => {
+	// 			for(let i = 0; i < blobs.length; i++){
+	// 				let reader = new FileReader();
+	// 				reader.onload = function() {
+	// 					domArr[i].src = `data:image/jpeg;base64,${this.result.split(',')[1]}`;
+	// 					if(i === blobs.length - 1) {
+	// 						callback();
+	// 					}
+	// 				}
 
-					reader.readAsDataURL(blobs[i]);
-				}
-			})
-			.catch(err => {
-				console.error("Image requests error:", err.message);
-				callback();
-			});
-		}
-	}
+	// 				reader.readAsDataURL(blobs[i]);
+	// 			}
+	// 		})
+	// 		.catch(err => {
+	// 			console.error("Image requests error:", err.message);
+	// 			callback();
+	// 		});
+	// 	}
+	// }
 
-	isSameOrigin(url) {
-		if(!(new RegExp(/https?:\/\/.*/)).test(url)) return true;
-		let curUrl = new URL(window.location.href);
-		let anotherUrl = new URL(url);
-		return (
-			curUrl.protocol === anotherUrl.protocol
-			&& curUrl.hostname === anotherUrl.hostname
-			&& (curUrl.port || 80) === (anotherUrl.port || 80)
-			);
-	}
+	// isSameOrigin(url) {
+	// 	if(!(new RegExp(/https?:\/\/.*/)).test(url)) return true;
+	// 	let curUrl = new URL(window.location.href);
+	// 	let anotherUrl = new URL(url);
+	// 	return (
+	// 		curUrl.protocol === anotherUrl.protocol
+	// 		&& curUrl.hostname === anotherUrl.hostname
+	// 		&& (curUrl.port || 80) === (anotherUrl.port || 80)
+	// 		);
+	// }
 
-	/**
-	 * 
-	 * @param {HTMLCanvasElement} canvas 
-	 * @param {Number} limitSize 
-	 * @param {Function} callback 
-	 */
-	transferCanvas(canvas, limitSize, callback) {
-		const {
-			userInfo
-		} = this.initialInfo;
-		let quality = 1;
-		const type = 'jpeg';
-		let dataURL = canvas.toDataURL(`image/${type}`, quality);
-		let dataURLSize = new Blob([dataURL]).size;
+	// /**
+	//  * 
+	//  * @param {HTMLCanvasElement} canvas 
+	//  * @param {Number} limitSize 
+	//  * @param {Function} callback 
+	//  */
+	// transferCanvas(canvas, limitSize, callback) {
+	// 	const {
+	// 		userInfo
+	// 	} = this.initialInfo;
+	// 	let quality = 1;
+	// 	const type = 'jpeg';
+	// 	let dataURL = canvas.toDataURL(`image/${type}`, quality);
+	// 	let dataURLSize = new Blob([dataURL]).size;
 
-		let kb = Math.ceil(dataURLSize / 1024);
-		quality = +(limitSize / kb).toFixed(2);
+	// 	let kb = Math.ceil(dataURLSize / 1024);
+	// 	quality = +(limitSize / kb).toFixed(2);
 
-		if(quality < 1) {
-			if(quality > 0) {
-				dataURL = canvas.toDataURL(`image/${type}`, quality);
-			} else if(quality === 0) {
-				dataURL = null;
-			}
-			canvas.toBlob(blob => {
-				let name = `image_${userInfo.userId}_${userInfo.researche_category_id}_${userInfo.id}_${new Date().getTime()}.${type}`;
-				// this.downloadPic(blob, name);
-				save2Gfs({blob, name})
-				.then(dir => {
-					callback({compressd_chart_url: dir, compressd_chart: dataURL ? dataURL.replace('data:image/jpeg;base64,', '') : null});
-				})
-			}, `image/${type}`, 1);
-		} else {
-			callback({compressd_chart_url: null, compressd_chart: dataURL.replace('data:image/jpeg;base64,', '')});
-		}
-	}
+	// 	if(quality < 1) {
+	// 		if(quality > 0) {
+	// 			dataURL = canvas.toDataURL(`image/${type}`, quality);
+	// 		} else if(quality === 0) {
+	// 			dataURL = null;
+	// 		}
+	// 		canvas.toBlob(blob => {
+	// 			let name = `image_${userInfo.userId}_${userInfo.researche_category_id}_${userInfo.id}_${new Date().getTime()}.${type}`;
+	// 			// this.downloadPic(blob, name);
+	// 			// save2Gfs({blob, name})
+	// 			// .then(dir => {
+	// 			// 	callback({compressd_chart_url: dir, compressd_chart: dataURL ? dataURL.replace('data:image/jpeg;base64,', '') : null});
+	// 			// })
+	// 		}, `image/${type}`, 1);
+	// 	} else {
+	// 		callback({compressd_chart_url: null, compressd_chart: dataURL.replace('data:image/jpeg;base64,', '')});
+	// 	}
+	// }
 
 	downloadPic(blob, name) {
 		let a =document.createElement('a');

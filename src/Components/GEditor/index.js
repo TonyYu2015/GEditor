@@ -26,12 +26,12 @@ export default function GEditor(props) {
 		<div>
 			<div id="ql-toolbar">
 				<button className="ql-list" value="ordered"/>
-				{/* <button className="ql-list" value="bullet"/>
+				<button className="ql-list" value="bullet"/>
 				<button className="ql-align" value="center"/>
 				<button className="ql-align" value="right"/>
 				<button className="ql-align" value="justify"/>
 				<button className="ql-indent" value="+1"/>
-				<button className="ql-indent" value="-1"/> */}
+				<button className="ql-indent" value="-1"/>
 				{/* <select className="ql-lineheight" defaultValue="1.3">
 					{lineHeightWhiteList.map((m, i) => {
 						return <option value={m} >{m}</option>

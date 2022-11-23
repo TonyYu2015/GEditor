@@ -312,20 +312,20 @@ function normalizeDelta(delta) {
 
 // import Block, { BlockEmbed } from './blots/block';
 // import Container from './blots/container';
-import OuterContainer from './blots/outerContainer';
-import Scroll from './blots/scroll';
+// import OuterContainer from './blots/outerContainer';
+// import Scroll from './blots/scroll';
 // import Embed from './blots/embed';
 
-import FreeContainer from './modules/FreeContainer';
+// import FreeContainer from './modules/FreeContainer';
 
 
 Quill.register({
-	'modules/freeContainer':FreeContainer,
+	// 'modules/freeContainer':FreeContainer,
   // 'blots/block': Block,
   // 'blots/block/embed': BlockEmbed,
   // 'blots/wrapperContainer': Container,
-  'blots/scroll': Scroll,
-  'blots/outerContainer': OuterContainer,
+  // 'blots/scroll': Scroll,
+  // 'blots/outerContainer': OuterContainer,
   // 'blots/embed': Embed,
 
 });
