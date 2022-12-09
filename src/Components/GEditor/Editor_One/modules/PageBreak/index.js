@@ -1,6 +1,6 @@
 import Quill from "quill";
 import HeaderAndFooter, { HEADER_FOOTER } from "./headerAndFooter";
-import { ContainerFlag, ContainerWrapper } from "../FreeContainer";
+import { ContainerFlag, ContainerWrapper, getContainer } from "../FreeContainer";
 import OuterContainer from "../../blots/outerContainer";
 import { editSize } from '../../common';
 import "./index.less";
@@ -11,6 +11,7 @@ const Break = Quill.import("blots/break");
 const OriginContainer = Quill.import('blots/container');
 
 class PageBreakFlag extends ContainerFlag {
+	nested = false;
 }
 
 PageBreakFlag.tagName = 'P';
@@ -33,49 +34,11 @@ export class PageContainer extends OuterContainer {
 		this._value = value;
 		this.quill = Quill.find(scroll.domNode.parentNode);
 		this.HeaderAndFooter = new HeaderAndFooter({ pageBlot: this, quill: this.quill });
-		// this.createResizeObserver();
 	}
-
-	createResizeObserver() {
-		const domNode = this.domNode;
-		// const quill = Quill.find(this.scroll.domNode.parentNode);
-		let resizeObserver = new ResizeObserver((entries) => {
-			console.log(entries, "======resizeObserver");
-			// if(quill.isLoadingRender) return;
-			// let container = this.getContainer(this);
-			// if(container && (container.statics.blotName === 'page-container')) {
-			// 	container.optimize();
-			// }
-		});
-
-		resizeObserver.observe(domNode);
-	}
-
-	addStyleToEdit() {
-		const editContainer = this.children.tail;
-		if (editContainer && !editContainer.domNode.getAttribute('style')) {
-			editContainer.domNode.setAttribute('style', 'position: relative;');
-		}
-	}
-
-
-	adjustPageFooterPosition() {
-		if (this.height !== this.domNode.clientHeight) {
-			this.height = this.domNode.clientHeight;
-			let blot = this.children.tail.children.head;
-			while (blot) {
-				if (blot.statics.blotName === 'page-footer') {
-					blot.updatePosition();
-					break;
-				}
-				blot = blot.next;
-			}
-		}
-	}
-
 
 	optimize(context) {
 		super.optimize(context);
+		if (!(this.children.head instanceof PageBreakFlag)) return;
 		const quill = Quill.find(this.scroll.domNode.parentNode);
 		const pageSizeOption = PageContainer.DEFAULT_OPTION;
 		if (isChildrenWorkOver(this) && !quill.isLoadingRender) {
@@ -84,43 +47,58 @@ export class PageContainer extends OuterContainer {
 			const pageContainerHeight = pageSizeOption.pageSize[1];
 			if (thisHeight > pageContainerHeight) {
 				let moveBlot = Quill.find(this.domNode.lastChild);
-				if (!this.next || this.next.statics.blotName !== PageContainer.blotName) {
+				if (!this.next) {
 					this.genNewPage(moveBlot);
 				} else {
 					this.moveContentToNext(moveBlot);
 				}
 				setTimeout(this.resetNextSelection.bind(this));
+			} else if (this.next && !this.checkNextNoContent()) {
+				this.moveContentToPrev();
 			}
 		}
 	}
 
-	/** 新建一页*/
 	genNewPage(moveBlot) {
-		const flag_container = this.scroll.create(PageBreakFlag.blotName, { pagenum: this.scroll.children.length + 1 });
+		const flag_container = this.scroll.create(PageBreakFlag.blotName, { pagenum: this.scroll.children.length + 1, level: 0 });
 		flag_container.wrap(PageContainer.blotName, { key: flag_container.key, level: flag_container.level });
 		flag_container.parent.appendChild(moveBlot);
 		this.scroll.appendChild(flag_container.parent);
 		// this.HeaderAndFooter.copyHeaderOrFooter();
 	}
 
-	/** 移到下一页 */
 	moveContentToNext(moveBlot) {
 		let theFirstBlot = this.findFirstContentNode(this.next);
 		this.next.insertBefore(moveBlot, theFirstBlot);
 	}
 
 	moveContentToPrev() {
-		const pageSizeOption = PageContainer.DEFAULT_OPTION;
-		const pageContainerHeight = pageSizeOption.pageSize[1];
+		const pageContainerHeight = this.calPageContainerHeight();
 		let thisContentHeight = 0;
 		this.children.forEach(blot => {
-			thisContentHeight += blot.domNode.clientHeight;
+			thisContentHeight += this.calLineHeight(blot.domNode);
 		});
 		let pendingMoveBlot = this.findFirstContentNode(this.next);
-		if (pageContainerHeight - thisContentHeight > pendingMoveBlot.domNode.clientHeight) {
+		if (pageContainerHeight - thisContentHeight > this.calLineHeight(pendingMoveBlot.domNode)) {
 			this.appendChild(pendingMoveBlot);
 			this.checkNextNoContent();
 		}
+	}
+
+	calPageContainerHeight() {
+		let pagePaddingTop = parseInt(this.domNode.style.paddingTop, 10);
+		pagePaddingTop = isNaN(pagePaddingTop) ? 0 : pagePaddingTop;
+		let pagePaddingBottom = parseInt(this.domNode.style.paddingBottom, 10);
+		pagePaddingBottom = isNaN(pagePaddingBottom) ? 0 : pagePaddingBottom;
+		return this.domNode.clientHeight - pagePaddingTop - pagePaddingBottom;
+	}
+
+	calLineHeight(domNode) {
+		let marginTop = parseInt(domNode.style.marginTop, 10);
+		marginTop = isNaN(marginTop) ? 0 : marginTop;
+		let marginBottom = parseInt(domNode.style.marginBottom, 10);
+		marginBottom = isNaN(marginBottom) ? 0 : marginBottom;
+		return domNode.offsetHeight + marginBottom + marginTop;
 	}
 
 	checkNextNoContent() {
@@ -197,7 +175,7 @@ export class PageContainer extends OuterContainer {
 				curBlot = b;
 			}
 		});
-		if (children === 1 || (children === 2 && curBlot.children.head instanceof Break)) {
+		if (children === 1) {
 			return true;
 		}
 		return false;
@@ -341,8 +319,8 @@ export default class PageBreak extends Module {
 				const quill = _this.quill;
 				let [prev] = quill.getLine(range.index);
 				let [line] = quill.getLine(range.index - 1);
-				const container = line.scroll.getContainer(line);
-				const prevContainer = prev.scroll.getContainer(prev);
+				const container = getContainer(line);
+				const prevContainer = getContainer(prev);
 				if (!(container instanceof PageContainer) || !(prevContainer instanceof PageContainer)) return true;
 
 				if (
@@ -359,13 +337,6 @@ export default class PageBreak extends Module {
 						return false;
 					}
 					// return false;
-				}
-				let nextPageContainer = prevContainer.next;
-				while(nextPageContainer) {
-					if (!nextPageContainer.prev.checkNextNoContent.call(nextPageContainer.prev)) {
-						nextPageContainer.prev.moveContentToPrev.call(nextPageContainer.prev);
-					}
-					nextPageContainer = nextPageContainer.next;
 				}
 				return true;
 			}

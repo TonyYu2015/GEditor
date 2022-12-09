@@ -1,5 +1,5 @@
 
-import Quill from './_core';
+import Quill from 'quill';
 // import {ImageDrop} from 'quill-image-drop-module';
 // import ImageResize from 'quill-image-resize-module';
 // import BlotFormatter from 'quill-blot-formatter';
@@ -15,8 +15,10 @@ import Quill from './_core';
 // import { Font } from './formats/font';
 // import lineHeightStyle from "./formats/lineHeight";
 
+import OuterContainer from './blots/outerContainer';
 import PageBreak from './modules/PageBreak';
 import Layout from "./modules/Layout";
+import History from './modules/History';
 // import KeyBoard from './modules/KeyBoard';
 // import FormatBrush from './modules/FormatBrush';
 // import RenderReactComponent from './modules/RenderRC';
@@ -44,6 +46,7 @@ import FreeContainer from './modules/FreeContainer';
 
 
 Quill.register({
+	'modules/history': History,
 	'modules/pageBreak': PageBreak,
 	'modules/freeContainer': FreeContainer,
 	// 'modules/better-table': Table,
@@ -70,6 +73,7 @@ Quill.register({
 	// 'formats/size': SizeStyle,
 	// 'formats/font': Font,
 	// 'formats/lineHeight': lineHeightStyle,
+	'formats/outerContainer': OuterContainer,
 }, true);
 
 export default Quill;

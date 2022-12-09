@@ -1,9 +1,7 @@
-import Quill from "quill";
 import PageBreak from "../index";
+import OuterContainer from "../../../blots/outerContainer";
 
-const Container = Quill.import("blots/outerContainer");
-
-export default class PageHeader extends Container {
+export default class PageHeader extends OuterContainer {
 	// 高度为页上边距,绝对定位附着于页面顶部
 	constructor(scroll, domNode, value) {
 		super(scroll, domNode, value);

@@ -22,6 +22,10 @@ export default class ContainerWrapper extends Container {
 
 	optimize(context) {
 		super.optimize(context);
+		this.calChildrenLen();
+	}
+	
+	calChildrenLen() {
 		const flagBlot = this.children.head;
 		if (flagBlot instanceof ContainerFlag) {
 			this.len = 0;

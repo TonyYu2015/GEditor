@@ -1,61 +1,78 @@
 .star::before {
 	content: "";
 }
+
 .edit-wrapper {
 	background-color: #e4e4e4;
-	height: 100%;
+	height          : 100%;
+
 	.w-spin-blur {
 		opacity: 0;
 	}
+
 	.wicon-svg {
-		margin-right: 8px;
-    vertical-align: -2px;
+		margin-right  : 8px;
+		vertical-align: -2px;
+	}
+
+	.forbidden {
+		color         : #ccc;
+		cursor        : default;
+		pointer-events: none;
 	}
 }
+
 .edit-range {
-	position: relative;
-	margin: 0 auto;
-	height: auto;
+	position  : relative;
+	margin    : 0 auto;
+	height    : auto;
 	background: #fff;
-	border: none !important;
+	border    : none !important;
+
 	// table.quill-better-table td {
 	// 	border: none;
 	// }
 	.ql-editor {
 		background-color: #e4e4e4;
-		line-height: 1.3;
+		line-height     : 1.3;
 	}
 }
+
 .module-name {
 	text-align: center;
-	color: #ccc;
+	color     : #ccc;
 }
+
 .tool-item {
 	height: auto;
-	width: auto;
+	width : auto;
 }
 
 .export-item {
 	margin-top: 12px;
 	text-align: center;
-	display: block !important;
-	width: 100% !important;
+	display   : block !important;
+	width     : 100% !important;
 }
 
 .quill-better-table {
-	width: 100% !important;
+	width  : 100% !important;
 	display: block;
+
 	tbody {
 		white-space: nowrap;
 	}
+
 	td {
 		vertical-align: text-top;
 	}
 }
+
 .ql-editor {
-	padding: 0;
+	padding : 0;
 	overflow: visible;
 }
+
 // .qlbt-col-tool {
 // 	display: none;
 // }
@@ -66,41 +83,48 @@
 .self_fun {
 	margin-right: 12px;
 	// min-width: 100px;
-	text-align: left;
+	text-align  : left;
 	// padding: 0px 8px !important;
 }
+
 .ql-container {
 	border: none !important;
 }
+
 .editable {
-	height: 100%;
+	height       : 100%;
 	overflow-wrap: break-word;
-	overflow-y: scroll;
+	overflow-y   : scroll;
 	// overflow: visible;
 }
 
 .react-resizable-handle {
 	opacity: 0;
 }
+
 .react-resizable:hover {
 	.react-resizable-handle {
 		opacity: 1;
 	}
 }
+
 .dragHandle {
 	cursor: move;
 }
+
 .MacroModal {
 	.w-modal-footer {
 		display: none;
 	}
+
 	.w-modal-body {
 		padding: 0px;
-		height: 80vh;
+		height : 80vh;
 	}
-	.w-modal-content{
-		transform: translate(-25vw, 0px)!important;	
-		width: 80vw;
+
+	.w-modal-content {
+		transform: translate(-25vw, 0px) !important;
+		width    : 80vw;
 	}
 }
 
@@ -122,22 +146,22 @@
 // 	border-radius: 50%;
 // }
 .shadow_container::before {
-	content: "";
+	content       : "";
 	pointer-events: none;
-	position: absolute;
-	left: -1px;
-	top: -1px;
-	width: 100%;
-	height: 100%;
-	border: 1px solid #3dc1d4;
+	position      : absolute;
+	left          : -1px;
+	top           : -1px;
+	width         : 100%;
+	height        : 100%;
+	border        : 1px solid #3dc1d4;
 }
 
 .ql-toolbar.ql-snow {
 	background: #fff;
-    border: 0;
-	margin:8px 0px;
-	padding:0
+	border    : 0;
+	padding   : 8px 0; 
 }
+
 .ReportPage_tooltop {
 	.wicon-svg:hover {
 		color: #06c;
@@ -147,25 +171,28 @@
 .ql-size {
 	width: 48px !important;
 }
+
 .ql-font {
 	width: 80px !important;
 }
+
 .ql-lineheight {
 	width: 48px;
 }
+
 .ql-container {
 	font-family: "宋体", Arial, sans-serif;
 }
 
 .InsertTableModal {
-	width:300px !important
+	width: 300px !important
 }
 
 
 
 .ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-label]:not([data-label=''])::before,
 .ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-label]:not([data-label=''])::before {
-  content: attr(data-label);
+	content: attr(data-label);
 }
 
 .ql-brush-active .ql-stroke {
@@ -175,66 +202,70 @@
 .w-modal-mask {
 	z-index: 10;
 }
+
 .w-modal-wrap {
 	z-index: 10;
 }
 
 .ql-rc-container {
 	&:hover::after {
-		content: "";
-		background: no-repeat 100% 100% url('./images/Close.png');
+		content       : "";
+		background    : no-repeat 100% 100% url('./images/Close.png');
 		pointer-events: auto;
-		cursor: pointer;
-		position: absolute;
-		right: 0px;
-		top: 0px;
-		width: 20px;
-		height: 20px;
+		cursor        : pointer;
+		position      : absolute;
+		right         : 0px;
+		top           : 0px;
+		width         : 20px;
+		height        : 20px;
 	}
 
 	.ql-render-react-component:hover::after {
-		content: "";
-		background: no-repeat 100% 100% url('./images/Save.png');
+		content       : "";
+		background    : no-repeat 100% 100% url('./images/Save.png');
 		pointer-events: auto;
-		cursor: pointer;
-		position: absolute;
-		right: 25px;
-		top: 0px;
-		width: 20px;
-		height: 20px;
+		cursor        : pointer;
+		position      : absolute;
+		right         : 25px;
+		top           : 0px;
+		width         : 20px;
+		height        : 20px;
 	}
 }
 
 .ql-free-text {
-	border: 1px solid transparent;
+	border : 1px solid transparent;
 	z-index: 5;
 }
+
 .ql-free-text-focused {
 	position: relative;
-	resize: both;
+	resize  : both;
 	overflow: scroll;
-	border: 1px solid #3dc1d4;
-	z-index: 6;
+	border  : 1px solid #3dc1d4;
+	z-index : 6;
+
 	&::before {
-		content: "";
-		background: no-repeat 100% 100% url('./images/Close.png');
+		content       : "";
+		background    : no-repeat 100% 100% url('./images/Close.png');
 		pointer-events: auto;
-		cursor: pointer;
-		position: absolute;
-		right: 20px;
-		bottom: 0px;
-		width: 20px;
-		height: 20px;
+		cursor        : pointer;
+		position      : absolute;
+		right         : 20px;
+		bottom        : 0px;
+		width         : 20px;
+		height        : 20px;
 	}
+
 	&::after {
-		content: "";
-		background: no-repeat 100% 100% url('./images/Finger.png');
+		content       : "";
+		background    : no-repeat 100% 100% url('./images/Finger.png');
 		pointer-events: auto;
-		cursor: move;
-		position: absolute;
-		right: 0px;
-		bottom: 0px;
-		width: 20px;
-		height: 20px;
+		cursor        : move;
+		position      : absolute;
+		right         : 0px;
+		bottom        : 0px;
+		width         : 20px;
+		height        : 20px;
 	}
 }

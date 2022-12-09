@@ -1,8 +1,4 @@
-import Quill from "quill";
-import PageBreak from "../index";
 import PageHeader from './pageHeader';
-
-const Container = Quill.import("blots/outerContainer");
 
 export default class PageHeaderFirst extends PageHeader {
 }

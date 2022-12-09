@@ -1,10 +1,10 @@
 import Quill from "quill";
 import PageBreak from "../index";
+import OuterContainer from "../../../blots/outerContainer";
 
-const Container = Quill.import("blots/outerContainer");
 const BlockEmbed = Quill.import("blots/block/embed");
 
-export default class PageFooter extends Container {
+export default class PageFooter extends OuterContainer {
 	static register() {
 		Quill.register(PageNum);
 	}	

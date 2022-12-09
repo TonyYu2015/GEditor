@@ -2,7 +2,6 @@ import Quill from "quill";
 import ContainerWrapper from './formats/container_wrapper';
 import ContainerFlag from './formats/container_flag';
 
-export { ContainerWrapper, ContainerFlag };
 
 const Module = Quill.import('core/module');
 const _Scroll = Quill.import('blots/scroll');
@@ -109,11 +108,11 @@ class Scroll extends _Scroll {
 }
 
 
-export default class FreeContainer extends Module {
+class FreeContainer extends Module {
 	static register() {
 		Quill.register('formats/container_wrapper', ContainerWrapper);
 		Quill.register('formats/container_flag', ContainerFlag);
-		Quill.register('blots/scroll', Scroll);
+		// Quill.register('blots/scroll', Scroll);
 	}
 
 	constructor(quill, options) {
@@ -158,5 +157,17 @@ export default class FreeContainer extends Module {
 	isInSameContainer(line, prev) {
 		return line.getContainer(line) === prev.getContainer(prev);
 	}
-
 }
+
+function getContainer(blot) {
+	if (blot.parent && blot.parent.statics.blotName !== 'scroll') {
+		if (blot.parent instanceof ContainerWrapper) {
+			return blot.parent;
+		} else {
+			return getContainer(blot.parent);
+		}
+	}
+	return blot.scroll;
+}
+
+export { ContainerWrapper, ContainerFlag, getContainer, FreeContainer as default };

@@ -16,7 +16,7 @@ const BlockEmbed = Quill.import('blots/block/embed');
 export default class ReportEditor {
 	constructor(initialInfo) {
 		this.initialInfo = initialInfo;
-		this.setFirstPageRenderEnd = initialInfo.setFirstPageRenderEnd;
+		this.setFirstPageRenderEnd = initialInfo.toolbarSet.setFirstPageRenderEnd;
 		this.initialQuill();
 		this.preventFocusScroll();
 	}
@@ -27,6 +27,7 @@ export default class ReportEditor {
 			toolbar, 
 			moduleOptions = {},
 			urlParamObj,
+			toolbarSet,
 			saveReport,
 			ID,
 			userInfo,
@@ -170,6 +171,7 @@ export default class ReportEditor {
 
 		this.quill.scroll.reportInfo = urlParamObj;
 		this.quill.QUEUE = QUEUE;
+		this.quill.toolbarSet = toolbarSet;
 	}
 
 	validateDelta(delta) {
@@ -216,9 +218,13 @@ export default class ReportEditor {
 
 	renderReport(newDelta) {
 		const quill = this.quill;
+		const history = quill.getModule('history');
+		history.ignoreChange = true;
 		quill.isLoadingRender = true;
-		quill.updateContents(new Delta().retain(1).concat(newDelta), Quill.sources.API);
-		quill.scroll.children.head.remove();
+		quill.setContents(new Delta(newDelta), Quill.sources.API);
+		setTimeout(() =>{
+			history.ignoreChange = false;
+		});
 		quill.isLoadingRender = false;
 	}
 
