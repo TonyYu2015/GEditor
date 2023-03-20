@@ -1,19 +1,12 @@
 import Quill from './register';
 // import Quill from 'quill';
-// import {
-// 	DIVIDER_BLOT_NAME
-// } from './formats/BLOT_NAMES';
 import QUEUE from './idleQueue';
 import { ResizeObserverBlotModule } from './resizeObserver';
 import NestContainerManager from "./nestContainerManager";
-// import CustomImageSpec from './formats/CustomImageSpec'
-// import html2canvas from 'html2canvas';
-// import { save2Gfs } from './apiHooks';
-// import Axios from 'axios';
+import { overRideKeyBoard } from './modules/KeyBoard';
 
 let Delta = Quill.import('delta');
 // const Image = Quill.import('formats/image');
-const BlockEmbed = Quill.import('blots/block/embed');
 
 export default class ReportEditor {
 	constructor(initialInfo) {
@@ -30,12 +23,6 @@ export default class ReportEditor {
 			moduleOptions = {},
 			urlParamObj,
 			toolbarSet,
-			saveReport,
-			ID,
-			userInfo,
-			setMacroUrl,
-			setMacroModal,
-			operation
 		} = this.initialInfo;
 		const _this = this;
 
@@ -43,29 +30,19 @@ export default class ReportEditor {
 			container,
 			{
 				modules: {
-					// table: false,
+					keyboard: {
+						bindings: {
+							...overRideKeyBoard
+						}
+					},
+					table: false,
 					pageBreak: true,
 					freeContainer: true,
-					// imageDrop:true,
-					// formatBrush: true,
-					// freeText: true,
-					// fullWidth: true,
-					// layout: true,
-					// renderRC: {
-					// 	team_id: userInfo.team_list[0].team_id,
-					// 	operation
-					// },
-					// customSet: {
-					// 	team_id: userInfo.team_list[0].team_id,
-					// 	operation
-					// },
-
-					// imageResize:{
-
-					// },
-					// blotFormatter:{
-					// 	specs: [ CustomImageSpec ],
-					// },
+					imageDrop:true,
+					formatBrush: true,
+					freeText: true,
+					fullWidth: true,
+					layout: true,
 					toolbar: {
 						container: toolbar,
 						handlers: {
@@ -77,22 +54,10 @@ export default class ReportEditor {
 							// 		{insert: { [DIVIDER_BLOT_NAME]: true }},
 							// 	])
 							// },
-							// export: function() {
-							// },
-							// catalogue: function() {
-							// 	const quill = this.quill;
-							// 	let delta = quill.getContents();
-							// 	let dom = document.getElementById('editor-wrapper')
-							// 	_this.updateCatalogue(delta,dom)
-							// },
-							// formatBrush: function() {
-							// 	const formatBrush = this.quill.getModule('formatBrush');
-							// 	formatBrush.toogleFormat();
-							// },
-							// customSet: function() {
-							// 	const customSet = this.quill.getModule("customSet");
-							// 	customSet.saveSet();
-							// },
+							formatBrush: function() {
+								const formatBrush = this.quill.getModule('formatBrush');
+								formatBrush.toogleFormat();
+							},
 							save() {
 								let delta = this.quill.getContents();
 								localStorage.setItem("delta", JSON.stringify({
@@ -138,7 +103,6 @@ export default class ReportEditor {
 		});
 
 
-		this.quill.scroll.reportInfo = urlParamObj;
 		this.quill.QUEUE = QUEUE;
 		this.quill.NestContainerManager = new NestContainerManager(this.quill);
 		this.quill.toolbarSet = toolbarSet;
@@ -179,64 +143,6 @@ export default class ReportEditor {
 		pageBreak._genOnePage();
 		quill.isLoadingRender = false;
 		this.setFirstPageRenderEnd(true);
-	}
-
-	renderReportAsync(newDelta,) {
-		const quill = this.quill;
-		// 分批加载优化
-		const pageDeltaArr = newDelta.reduce((a, b) => {
-			if (b.attributes && b.attributes['container-flag'] && b.attributes['container-flag'].container === 'page-container') {
-				a.push([]);
-			}
-			a[a.length - 1].push(b);
-			return a;
-		}, []);
-
-		quill.isLoadingRender = true;
-		quill.asyncTasksAfterLoadingRender = [];
-		quill.asyncTasksAfterLoadingRender.push(() => {
-			quill.isLoadingRender = false;
-			if (quill.scroll.reportInfo.new) {
-				let refreshModule = quill.getModule("refresh");
-				refreshModule.refreshAll();
-			}
-		});
-
-		// check the attr in flag
-		quill.asyncTasksAfterLoadingRender.push(() => {
-			quill.scroll.children.forEach(pageBlot => {
-				pageBlot.checkFlag();
-			});
-		});
-
-		quill.QUEUE.resetQueue();
-		// loadingRender start
-		this.rennderInQueue(pageDeltaArr, 1);
-	}
-
-	rennderInQueue(args, renderCount) {
-		const curDelta = args.shift();
-		const quill = this.quill;
-		quill.QUEUE.pushTask(() => {
-			if (renderCount === 1) {
-				quill.setContentsAsync(new Delta(curDelta).delete(1), Quill.sources.API);
-				quill.QUEUE.pushTask(_ => {
-					this.setFirstPageRenderEnd(true)
-				});
-			} else {
-				const length = quill.getLength();
-				quill.updateContentsAsync(new Delta().retain(length).delete(1).concat(new Delta(curDelta)), Quill.sources.API);
-			}
-			if (args.length > 0) {
-				this.rennderInQueue(args);
-			} else {
-				// loadingRender end
-				while (quill.asyncTasksAfterLoadingRender.length > 0) {
-					const task = quill.asyncTasksAfterLoadingRender.shift();
-					quill.QUEUE.pushTask(task);
-				}
-			}
-		});
 	}
 
 	undo() {

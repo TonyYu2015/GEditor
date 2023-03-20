@@ -3,7 +3,6 @@ import { UndoOutlined, RedoOutlined, FormatPainterOutlined } from "@ant-design/i
 import { Dropdown, Menu, Spin, Affix } from "antd";
 // import 'react-resizable/css/styles.css';
 
-// import Quill from './register';
 import 'quill/dist/quill.snow.css';
 // import 'quill-better-table/src/assets/quill-better-table.scss';
 
@@ -11,7 +10,6 @@ import './index.less';
 
 import { editSize } from './common';
 import PageMargins from './modules/PageBreak/components/PageMargins';
-// import DragDrop, { DropZone, Box } from './components/DragDrop'; // 拖拽组件
 
 import { SIZE_NUM } from './formats/size';
 import { FONT_TYPE } from './formats/font';
@@ -120,26 +118,28 @@ export default function Editor(props) {
 							return <option value={m} >{m}</option>
 						})}
 					</select>
-					<ToolItem className="ql-borderpadding self_fun">
-						<Dropdown
-							// trigger={['click']} 
-							className="borderpadding"
-							overlay={(
-								<Menu selectable onClick={e => {
+					<ToolItem className="ql-insert-toolitem self_fun">
+						<Dropdown className="ql-insert-drop" overlay={(
+							<Menu selectable onClick={e => {
+								if (e.key == "freeText") {
+									editorInstance.current.handleFreeTextInsert();
+								} else if(e.key == "fullWidth") {
+									editorInstance.current.handleFullWidthInsert();
+								} else {
 									editorInstance.current.handleInsert(e.key);
-								}}>
-									<Menu.Item key="layout_2">two</Menu.Item>
-								</Menu>
-							)}
-						>
-							<div>
-								layout
-							</div>
+								}
+							}}>
+								<Menu.Item key="layout_2">TwoColumns</Menu.Item>
+								<Menu.Item key="freeText" >FreeText</Menu.Item>
+								<Menu.Item key="fullWidth" >FullWidth</Menu.Item>
+							</Menu>
+						)} >
+							<span>Insert</span>
 						</Dropdown>
 					</ToolItem>
 					<ToolItem className="ql-borderpadding self_fun">
 						<PageMargins quill={editorInstance.current?.quill} reportPagePadding={pagePadding}>
-							<span>padding</span>
+							<span>Padding</span>
 						</PageMargins>
 					</ToolItem>
 					<ToolItem className="ql-pageTopandBottom self_fun">
@@ -149,25 +149,23 @@ export default function Editor(props) {
 									editorInstance.current.handleInsert(e.key);
 								}}>
 									<Menu.Item key="page-header_normal" title="header">
-										header
+										Header
 									</Menu.Item>
 									<Menu.Item key="page-footer_normal" title="footer">
-										footer
+										Footer
 									</Menu.Item>
 								</Menu>
 							)} >
 							<div>
-								headerFooter
+								HeaderFooter
 							</div>
 						</Dropdown>
 					</ToolItem>
-					<ToolItem className="ql-save">save</ToolItem>
-					<ToolItem className="ql-clear">clear</ToolItem>
+					<ToolItem className="ql-save">Save</ToolItem>
+					<ToolItem className="ql-clear">Clear</ToolItem>
 				</div>
 			</Affix>
-			{/* <DragDrop> */}
 			<Spin spinning={!firstPageRenderEnd}>
-				{/* <DropZone quill={editorInstance.current?.quill} lastSelectionIndex={editorInstance.current?.lastSelectionIndex}> */}
 				<div
 					className="edit-range"
 					id="editor-wrapper"
@@ -177,14 +175,10 @@ export default function Editor(props) {
 					ref={editRef}
 					style={{
 						width: editSize.width,
-						// height: editSize.height,
-						// padding: `${editSize.padding_top}px ${editSize.padding}px 0 ${editSize.padding}px`,
 					}}
 				>
 				</div>
-				{/* </DropZone> */}
 			</Spin>
-			{/* </DragDrop> */}
 		</div>
 	)
 }

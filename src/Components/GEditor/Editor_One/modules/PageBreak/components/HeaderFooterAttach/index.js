@@ -38,13 +38,13 @@ function HeaderFooterAttach(props) {
 						setFirstDifferent(e.target.checked);
 					}}
 					checked={isFirstDifferent}
-				>首页不同</Checkbox>
+				>FirstPageDifferent</Checkbox>
 			}
 			<Dropdown
 				overlay={
 					<Menu selectable>
 						<Menu.Item onClick={remove}>
-							{`移除${text}`}
+							{`remove ${text}`}
 						</Menu.Item>
 					</Menu>
 				}
@@ -57,7 +57,7 @@ function HeaderFooterAttach(props) {
 						cursor: "default",
 						lineHeight: "24px"
 					}}
-				>选项</span>
+				>option</span>
 			</Dropdown>
 		</>
 	)
@@ -65,7 +65,7 @@ function HeaderFooterAttach(props) {
 
 export default function RenderHeaderFooterAttach({ isFirst, text, container, remove, isFirstDiff, toggleFirstPage }) {
 	if (!(container instanceof HTMLElement)) {
-		console.error("容器必须为html元素!!!");
+		console.error("container must be HTMLElement!!!");
 		return;
 	}
 	ReactDOM.createRoot(container)

@@ -40,7 +40,7 @@ export default function PageMargins(props) {
 				className='page-margins'
 				width={300}
 				closable={false}
-				title="页边距"
+				title="PageMargin"
 				onOk={() => onOk(pagePadding, quill)}
 				onCancel={() =>setVisible(false)}
 			>

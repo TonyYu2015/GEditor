@@ -4,8 +4,7 @@ import "./index.less";
 
 function ContextMenuCom(props) {
 	const {
-		data,
-		blot
+		data
 	} = props;
 
 	return (
@@ -13,7 +12,7 @@ function ContextMenuCom(props) {
 			{
 				data.map(item => {
 					return (
-						<span className="lcw-item" onClick={item.clickEvt.bind(null, blot)}>{item.text}</span>
+						<span className="lcw-item" onClick={item.clickEvt}>{item.text}</span>
 					)
 				})
 			}
@@ -22,37 +21,34 @@ function ContextMenuCom(props) {
 }
 
 export default class ContextMenu {
-	constructor(quill, menu) {
+		constructor(option, quill, menu) {
 		this.destoryHandler = this.destory.bind(this);
 		this.quill = quill;
-		this.menu = menu;
-		this.initial();
+		this.initial(option, menu);
 	}
 
 	destory() {
-		this.domNode.style.display = "none";
+		this.root.unmount();
+		this.quill.layoutContextMenuDomNode = null;
+		this.domNode.remove();
+		document.removeEventListener('click', this.destoryHandler);
 	}
 
-	render(position, blot) {
-		this.domNode.setAttribute("style", `display: block; position: absolute; left: ${position.left}px; top: ${position.top}px;`);
-		this.root.render(
-			<ContextMenuCom
-				data={this.menu}
-				blot={blot}
-			/> 
-		);
-	}
-
-	initial() {
-		if(!this.domNode) {
+	initial(option, menu) {
+		if (!this.quill.layoutContextMenuDomNode) {
 			this.domNode = document.createElement('div');
+			this.quill.layoutContextMenuDomNode = this.domNode;
 			document.body.appendChild(this.domNode);
+		} else {
+			this.domNode = this.quill.layoutContextMenuDomNode;
 		}
 		document.addEventListener('click', this.destoryHandler);
+
+		this.domNode.setAttribute("style", `position: absolute; left: ${option.left}px; top: ${option.top}px;z-index: 999;`);
 
 		if(!this.root) {
 			this.root = createRoot(this.domNode);
 		}
-
+		this.root.render(<ContextMenuCom data={menu}/>);
 	}
 }

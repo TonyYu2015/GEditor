@@ -1,22 +1,19 @@
 
 import Quill from "quill"
-import withWrapper from "../modules/FreeContainer/withWrapper";
+import { withWrapper } from "../modules/FreeContainer";
 
-const Q_List = Quill.import("formats/list");
-const Container = Quill.import("blots/wrapperContainer");
+const ListContainer = withWrapper(Quill.import("formats/list-container"));
+const ListItem = Quill.import("formats/list");
+const Block = Quill.import("blots/block");
 
+class ListContent extends Block {}
 
-class ListContainer extends Container {}
-ListContainer.blotName = 'list-container';
-ListContainer.tagName = 'OL'
+ListContent.blotName = "list-content";
+ListContent.tagName = "DIV";
+ListContent.className = "ql-list-content";
 
-class ListItem extends Q_List {
-	static register() {
-		Quill.register(ListContainer);
-	}
-}
+ListContainer.allowedChildren = [ListItem, ListContent];
 
-ListContainer.allowedChildren = [ListItem];
-ListItem.requiredContainer = ListContainer;
+ListContent.requiredContainer = ListContainer;
 
-export default withWrapper(ListItem);
+export { ListContainer as default, ListContent};

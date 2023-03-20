@@ -1,6 +1,6 @@
 import Quill from "quill";
 import QuillBetterTable from 'quill-better-table';
-import { withContainer } from "../FreeContainer/blots/container";
+import { withWrapper } from "../FreeContainer";
 import ClipBoard from "./clipboard";
 import { extendTableContainer, extendTableCellLine, extendTableCell } from "./extendTable";
 
@@ -18,7 +18,7 @@ export default class Table extends QuillBetterTable {
     const TableCell = Quill.import('formats/table');
 
     Quill.register({
-      'formats/table-view': withContainer(TableViewWrapper),
+      'formats/table-view': withWrapper(TableViewWrapper),
       'formats/table-container': extendTableContainer(TableContainer, TableCol),
       'formats/table-cell-line': extendTableCellLine(TableCellLine),
       'formats/table': extendTableCell(TableCell),

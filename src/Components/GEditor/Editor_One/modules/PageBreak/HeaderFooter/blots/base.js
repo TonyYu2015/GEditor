@@ -73,7 +73,6 @@ export default class BaseContainer extends ContainerWrapper {
 
 	optimize(context) {
 		super.optimize(context);
-		/**记录height\top\pageKey */
 		this.attachAttrsToFlag({ top: this.domNode.offsetTop, height: this.domNode.offsetHeight, pageKey: this.pageKey });
 	}
 }

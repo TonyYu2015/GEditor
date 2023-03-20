@@ -25,15 +25,6 @@ class PageContainer extends ContainerWrapper {
 		this.HeaderAndFooter = new HeaderAndFooter({ pageBlot: this, quill: this.quill });
 	}
 
-	updateIndicator() {
-		// 新建模板时刷新函数指标
-		if (this.scroll.reportInfo.isTemplateDelta && this.scroll.reportInfo.new && !this.next) {
-			let refreshModule = quill.getModule("refresh");
-			refreshModule.refreshAll();
-			this.scroll.reportInfo.new = false;
-		}
-	}
-
 	get pagenum() {
 		return this.PageBreakModule.getPageNum(this);
 	}

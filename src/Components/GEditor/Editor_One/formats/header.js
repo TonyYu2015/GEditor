@@ -1,5 +1,5 @@
 import Quill from "quill"
-import withWrapper from "../modules/FreeContainer/withWrapper";
+import withWrapper from "../modules/FreeContainer/_withWrapper";
 
 const Header = Quill.import("formats/header");
 

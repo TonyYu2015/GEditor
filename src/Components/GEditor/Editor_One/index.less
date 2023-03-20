@@ -114,39 +114,6 @@
 	cursor: move;
 }
 
-.MacroModal {
-	.w-modal-footer {
-		display: none;
-	}
-
-	.w-modal-body {
-		padding: 0px;
-		height : 80vh;
-	}
-
-	.w-modal-content {
-		transform: translate(-25vw, 0px) !important;
-		width    : 80vw;
-	}
-}
-
-// .ql-layout-outer {
-// 	// pointer-events: none;
-// 	position: relative;
-// }
-// .ql-layout-outer:hover::after {
-// 	content: "";
-// 	background: no-repeat 100% 100% url('./images/Close.png');
-// 	pointer-events: auto;
-// 	cursor: pointer;
-// 	position: absolute;
-// 	right: -10px;
-// 	top: -10px;
-// 	width: 20px;
-// 	height: 20px;
-// 	border: 1px solid #ccc;
-// 	border-radius: 50%;
-// }
 .shadow_container::before {
 	content       : "";
 	pointer-events: none;
@@ -168,14 +135,6 @@
 	.wicon-svg:hover {
 		color: #06c;
 	}
-}
-
-.ql-size {
-	width: 48px !important;
-}
-
-.ql-font {
-	width: 80px !important;
 }
 
 .ql-lineheight {
@@ -237,6 +196,7 @@
 
 .ql-free-text {
 	border : 1px solid transparent;
+	padding: 5px;
 	z-index: 5;
 }
 
@@ -246,28 +206,4 @@
 	overflow: scroll;
 	border  : 1px solid #3dc1d4;
 	z-index : 6;
-
-	&::before {
-		content       : "";
-		background    : no-repeat 100% 100% url('./images/Close.png');
-		pointer-events: auto;
-		cursor        : pointer;
-		position      : absolute;
-		right         : 20px;
-		bottom        : 0px;
-		width         : 20px;
-		height        : 20px;
-	}
-
-	&::after {
-		content       : "";
-		background    : no-repeat 100% 100% url('./images/Finger.png');
-		pointer-events: auto;
-		cursor        : move;
-		position      : absolute;
-		right         : 0px;
-		bottom        : 0px;
-		width         : 20px;
-		height        : 20px;
-	}
 }

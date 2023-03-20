@@ -3,13 +3,9 @@ import Resize from './resize';
 import { genId, getEventComposedPath } from "../../common";
 import LayoutContextMenu from "../../components/ContextMenu";
 import ContainerWrapper from '../FreeContainer/blots/containerWrapper';
-import withWrapper from '../FreeContainer/_withWrapper';
 import { createInsertDelta } from "../../utility";
 
-const Delta = Quill.import('delta');
 const Module = Quill.import('core/module');
-const Container = Quill.import("blots/container");
-const Break = Quill.import('blots/break');
 
 class LayoutOuterContainer extends ContainerWrapper {
 	static create(value) {
@@ -39,9 +35,6 @@ class LayoutOuterContainer extends ContainerWrapper {
 			}
 		});
 
-		/**
-		 * 添加右键菜单功能
-		 */
 		domNode.addEventListener("contextmenu", (e) => {
 			e.preventDefault();
 			let path = getEventComposedPath(e);
@@ -54,18 +47,8 @@ class LayoutOuterContainer extends ContainerWrapper {
 				left: e.pageX,
 				top: e.pageY
 			}, quill, [
-				// {
-				// 	text: "保存元件",
-				// 	clickEvt: (evt) => {
-				// 		const layoutBlot = Quill.find(layouterNode[0]);
-				// 		const index = quill.getIndex(layoutBlot);
-				// 		const layoutDelta = quill.getContents(index, layoutBlot.length());
-				// 		const customSet = quill.getModule("customSet");
-				// 		customSet.saveSet(layoutDelta);
-				// 	}
-				// }, 
 				{
-					text: "删除",
+					text: "remove",
 					clickEvt: (evt) => {
 						this.remove();
 						if (this.parent.children.length === 0) {
@@ -112,7 +95,6 @@ LayoutContainer.blotName = "layout-container";
 LayoutContainer.tagName = "DIV";
 LayoutContainer.className = "ql-layout-container";
 
-// LayoutContainer.requiredContainer = LayoutOuterContainer;
 LayoutOuterContainer.allowedChildren = [LayoutContainer, Resize];
 
 export default class Layout extends Module {

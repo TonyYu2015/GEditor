@@ -35,7 +35,7 @@ class PageBreak extends Module {
 			}
 		});
 
-		this.quill.root.addEventListener("keydown", (e) => {
+		quill.root.addEventListener("keydown", (e) => {
 			if (e.key == KeyBoard.BACKSPACE || e.key == KeyBoard.ENTER) {
 				if (this.isAllSelectPage) {
 					this.clearAllSelected();

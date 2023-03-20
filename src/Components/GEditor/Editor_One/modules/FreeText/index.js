@@ -4,10 +4,7 @@ import LayoutContextMenu from "../../components/ContextMenu";
 import { createInsertDelta } from "../../utility";
 import ContainerWrapper from "../FreeContainer/blots/containerWrapper";
 
-const Container = Quill.import("blots/outerContainer");
 const Module = Quill.import('core/module');
-const Delta = Quill.import('delta');
-
 
 /**
  * 1. move freely in a page
@@ -61,7 +58,7 @@ class FreeText extends ContainerWrapper {
 				top: e.pageY
 			}, quill, [
 				{
-					text: "删除",
+					text: "remove",
 					clickEvt: (evt) => {
 						evt.preventDefault();
 						this.remove();
