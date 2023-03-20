@@ -4,6 +4,7 @@ import QUEUE from './idleQueue';
 import { ResizeObserverBlotModule } from './resizeObserver';
 import NestContainerManager from "./nestContainerManager";
 import { overRideKeyBoard } from './modules/KeyBoard';
+import CustomImageSpec from './formats/CustomImageSpec'
 
 let Delta = Quill.import('delta');
 // const Image = Quill.import('formats/image');
@@ -38,11 +39,14 @@ export default class ReportEditor {
 					table: false,
 					pageBreak: true,
 					freeContainer: true,
-					imageDrop:true,
+					// imageDrop:true,
 					formatBrush: true,
 					freeText: true,
 					fullWidth: true,
 					layout: true,
+					blotFormatter: {
+						specs: [CustomImageSpec],
+					},
 					toolbar: {
 						container: toolbar,
 						handlers: {
@@ -54,7 +58,7 @@ export default class ReportEditor {
 							// 		{insert: { [DIVIDER_BLOT_NAME]: true }},
 							// 	])
 							// },
-							formatBrush: function() {
+							formatBrush: function () {
 								const formatBrush = this.quill.getModule('formatBrush');
 								formatBrush.toogleFormat();
 							},

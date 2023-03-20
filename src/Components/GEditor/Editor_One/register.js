@@ -1,6 +1,7 @@
 
 import Quill from 'quill';
-import { ImageDrop } from 'quill-image-drop-module';
+// import { ImageDrop } from 'quill-image-drop-module';
+import BlotFormatter from 'quill-blot-formatter';
 
 import { DividerBlot } from './formats/dividers';
 import Header from './formats/header';
@@ -25,16 +26,17 @@ Quill.register({
 	'modules/pageBreak': PageBreak,
 	'modules/freeContainer': FreeContainer,
 	'modules/better-table': Table,
-	'modules/imageDrop': ImageDrop,
+	// 'modules/imageDrop': ImageDrop,
+	'modules/blotFormatter': BlotFormatter,
 	'modules/freeText': FreeText,
 	'modules/fullWidth': FullWidth,
 
 	'modules/layout': Layout,
 	'modules/keyboard': KeyBoard,
-	'modules/formatBrush':FormatBrush,
+	'modules/formatBrush': FormatBrush,
 
 
-	'formats/dividerBlot':DividerBlot,
+	'formats/dividerBlot': DividerBlot,
 	'formats/header': Header,
 	'formats/list-container': ListContainer,
 	'formats/list-content': ListContent,

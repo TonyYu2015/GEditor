@@ -23,9 +23,6 @@ export function withCompContainer(container) {
 				}
 			});
 
-			/**
-			 * 添加右键菜单功能
-			 */
 			domNode.addEventListener("contextmenu", (e) => {
 				e.preventDefault();
 				e.stopPropagation();
@@ -36,7 +33,7 @@ export function withCompContainer(container) {
 					top: e.pageY
 				}, this.quill, [
 					{
-						text: "删除",
+						text: "remove",
 						clickEvt: (evt) => {
 							evt.preventDefault();
 							this.remove();

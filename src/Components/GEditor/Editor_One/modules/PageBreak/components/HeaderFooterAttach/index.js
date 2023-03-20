@@ -26,7 +26,7 @@ function HeaderFooterAttach(props) {
 			}}>
 				{
 					isFirst ?
-						isFirstDifferent ? `首页${text}` : text
+						isFirstDifferent ? `FirstPage${text}` : text
 						: text
 				}
 			</span>

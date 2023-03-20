@@ -119,8 +119,8 @@ export default function Editor(props) {
 						})}
 					</select>
 					<ToolItem className="ql-insert-toolitem self_fun">
-						<Dropdown className="ql-insert-drop" overlay={(
-							<Menu selectable onClick={e => {
+						<Dropdown className="ql-insert-drop" overlay={
+							<Menu onClick={e => {
 								if (e.key == "freeText") {
 									editorInstance.current.handleFreeTextInsert();
 								} else if(e.key == "fullWidth") {
@@ -133,7 +133,7 @@ export default function Editor(props) {
 								<Menu.Item key="freeText" >FreeText</Menu.Item>
 								<Menu.Item key="fullWidth" >FullWidth</Menu.Item>
 							</Menu>
-						)} >
+						} >
 							<span>Insert</span>
 						</Dropdown>
 					</ToolItem>
@@ -144,8 +144,8 @@ export default function Editor(props) {
 					</ToolItem>
 					<ToolItem className="ql-pageTopandBottom self_fun">
 						<Dropdown
-							overlay={(
-								<Menu selectable onClick={e => {
+							overlay={
+								<Menu onClick={e => {
 									editorInstance.current.handleInsert(e.key);
 								}}>
 									<Menu.Item key="page-header_normal" title="header">
@@ -155,14 +155,12 @@ export default function Editor(props) {
 										Footer
 									</Menu.Item>
 								</Menu>
-							)} >
-							<div>
-								HeaderFooter
-							</div>
+							}>
+							<span>HeaderFooter</span>
 						</Dropdown>
 					</ToolItem>
-					<ToolItem className="ql-save">Save</ToolItem>
-					<ToolItem className="ql-clear">Clear</ToolItem>
+					<ToolItem className="ql-save self_fun">Save</ToolItem>
+					<ToolItem className="ql-clear self_fun">Clear</ToolItem>
 				</div>
 			</Affix>
 			<Spin spinning={!firstPageRenderEnd}>

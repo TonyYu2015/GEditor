@@ -33,7 +33,7 @@ class FullWidthWrapper extends ContainerWrapper {
 				top: e.pageY
 			}, this.quill, [
 				{
-					text: "删除",
+					text: "remove",
 					clickEvt: (evt) => {
 						evt.preventDefault();
 						this.remove();

@@ -46,14 +46,14 @@ export default function PageMargins(props) {
 			>
 				<Row>
 					<Col span={12} style={{textAlign:'center',paddingBottom:'20px'}}>
-						上：
+						Up:
 					</Col>
 					<Col span={12}>
 						<InputNumber 
 							min={1} 
 							max={1000} 
 							defaultValue={px2cm(pagePadding[0])} 
-							formatter={val => `${val}厘米`}
+							formatter={val => `${val}cm`}
 							onChange={val => {
 								let tmpPagePadding = [...pagePadding];
 								tmpPagePadding[0] = cm2px(val);
@@ -64,14 +64,14 @@ export default function PageMargins(props) {
 				</Row>
 				<Row>
 					<Col span={12} style={{textAlign:'center',paddingBottom:'20px'}}>
-						下：
+						Down:
 					</Col>
 					<Col span={12}>
 						<InputNumber 
 							min={1} 
 							max={1000} 
 							defaultValue={px2cm(pagePadding[2])} 
-							formatter={val => `${val}厘米`}
+							formatter={val => `${val}cm`}
 							onChange={val => {
 								let tmpPagePadding = [...pagePadding];
 								tmpPagePadding[2] = cm2px(val);
@@ -82,14 +82,14 @@ export default function PageMargins(props) {
 				</Row>
 				<Row>
 					<Col span={12} style={{textAlign:'center',paddingBottom:'20px'}}>
-						左：
+						Left:
 					</Col>
 					<Col span={12}>
 						<InputNumber 
 							min={1} 
 							max={1000} 
 							defaultValue={px2cm(pagePadding[3])} 
-							formatter={val => `${val}厘米`}
+							formatter={val => `${val}cm`}
 							onChange={val => {
 								let tmpPagePadding = [...pagePadding];
 								tmpPagePadding[3] = cm2px(val);
@@ -100,14 +100,14 @@ export default function PageMargins(props) {
 				</Row>
 				<Row>
 					<Col span={12} style={{textAlign:'center'}}>
-						右：
+						Right:
 					</Col>
 					<Col span={12}>
 						<InputNumber 
 							min={1} 
 							max={1000} 
 							defaultValue={px2cm(pagePadding[1])} 
-							formatter={val => `${val}厘米`}
+							formatter={val => `${val}cm`}
 							onChange={val => {
 								let tmpPagePadding = [...pagePadding];
 								tmpPagePadding[1] = cm2px(val) ;

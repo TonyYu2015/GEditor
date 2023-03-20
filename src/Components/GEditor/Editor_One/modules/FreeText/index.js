@@ -45,9 +45,6 @@ class FreeText extends ContainerWrapper {
 			_this.handleMouseUp();
 		});
 
-		/**
-		 * 添加右键菜单功能
-		 */
 		domNode.addEventListener("contextmenu", (e) => {
 			e.preventDefault();
 			e.stopPropagation();
