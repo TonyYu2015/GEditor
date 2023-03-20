@@ -1,11 +1,14 @@
 import Quill from "quill";
-import { editSize } from "../../common";
+import { Range } from "quill/core/selection";
+import { editSize, getEventComposedPath } from "../../common";
+import LayoutContextMenu from "../../components/ContextMenu";
+import { createInsertDelta } from "../../utility";
+import { ContainerWrapper } from "../FreeContainer";
 
-const Container = Quill.import("blots/outerContainer");
 const Module = Quill.import('core/module');
 const Delta = Quill.import('delta');
 
-class FullWidthWrapper extends Container {
+class FullWidthWrapper extends ContainerWrapper {
 	static create(value) {
 		let domNode = super.create(value);
 		domNode.setAttribute('style', `width: ${editSize.width}px; min-height: 100px; position: relative;`);
@@ -14,17 +17,30 @@ class FullWidthWrapper extends Container {
 
 	constructor(scroll, domNode, value) {
 		super(scroll, domNode, value);
-		const quill = Quill.find(this.scroll.domNode.parentNode);
-		let pageBreak = quill.getModule('pageBreak');
-		domNode.style.marginLeft = `-${pageBreak.constructor.pagePadding[3]}px`;
-	}
+		this.autoAddNextBlock = false;
+		this.quill = Quill.find(this.scroll.domNode.parentNode);
+		let pageBreak = this.quill.getModule('pageBreak');
+		domNode.style.marginLeft = `-${pageBreak.PagePaddingManager.padding_left}px`;
 
-	optimize(context) {
-		super.optimize(context);
-		let firstChild = this.children.head;
-		if(firstChild && firstChild.next && !firstChild.next.domNode.getAttribute('style')) {
-			firstChild.next.domNode.setAttribute('style', 'position: relative;');
-		}
+		domNode.addEventListener("contextmenu", (e) => {
+			let _this = this;
+			e.preventDefault();
+			e.stopPropagation();
+			let path = getEventComposedPath(e);
+			if (!path || path.length <= 0) return;
+			new LayoutContextMenu({
+				left: e.pageX,
+				top: e.pageY
+			}, this.quill, [
+				{
+					text: "删除",
+					clickEvt: (evt) => {
+						evt.preventDefault();
+						this.remove();
+					}
+				}
+			]);
+		}, false);
 	}
 }
 
@@ -43,25 +59,22 @@ export default class FullWidthModule extends Module {
 		super(quill, options);
 	}
 
-	insert({index}) {
-		const quill = this.quill;	
-		const range = quill.getSelection();
-		if(!index && !range) return;
-		index = index || range.index;
-    let currentBlot = quill.getLeaf(index)[0]
-		if(this.isInFullWidthWrapper(currentBlot)) return;
+	insert({ index }) {
+		const quill = this.quill;
+		if (index === -1) {
+			return;
+		}
 
+		let currentBlot = quill.getLeaf(index)[0]
+		if (this.isInFullWidthWrapper(currentBlot))
+			return;
 
-		let layoutDelta = new Delta()
-			.retain(index)
-			.insert({'container-flag': {container: FullWidthWrapper.blotName} });
+		let layoutDelta = createInsertDelta(quill, index).insert({ 'block': { container: FullWidthWrapper.blotName } });
 
 		quill.updateContents(
 			layoutDelta,
 			Quill.sources.USER
 		);
-		const [line, offset] = quill.getLine(index);
-		// line.parent.addFocusedChange();
 	}
 
 	isInFullWidthWrapper(current) {
@@ -70,5 +83,5 @@ export default class FullWidthModule extends Module {
 				? true
 				: this.isInFullWidthWrapper(current.parent)
 			: false
-		}
+	}
 }

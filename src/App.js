@@ -1,21 +1,10 @@
-import { Layout, Menu, Dropdown } from "antd";
+import { Layout } from "antd";
 import './App.css';
-import GEditor from "./Components/GEditor/Editor_One";
+import GEditor from "./Components/GEditor/Editor_One/index";
+// import GEditorSharedb from "./Components/GEditor/Editor_One/index_sharedb";
+// import PEditor from "./Components/PEditor/pEditor";
 
-const { Header, Content } = Layout;
-
-const MENU_ITEMS = [
-  {
-    label: "设置", 
-    key: "setting",
-    children: [
-      {
-        label: "页边距",
-        key: "padding"
-      }
-    ]
-  }
-];
+const { Content } = Layout;
 
 function App() {
   return (
@@ -32,6 +21,7 @@ function App() {
       </Header> */}
       <Content>
         <GEditor/>
+        {/* <PEditor/> */}
       </Content>
     </Layout>
   );

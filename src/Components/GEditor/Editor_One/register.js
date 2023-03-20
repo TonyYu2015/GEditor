@@ -7,9 +7,7 @@ import Quill from 'quill';
 // import { DividerBlot } from './formats/dividers';
 // import Header from './formats/header';
 // import List from './formats/list';
-// import ContainerFlag from './formats/container_flag';
 // import Table from './modules/Table';
-// import EditContainer from './formats/editContainer';
 // import * as style from './attrs/styleAttrs'
 // import { SizeStyle } from './formats/size';
 // import { Font } from './formats/font';
@@ -68,8 +66,6 @@ Quill.register({
 	// 'formats/dividerBlot':DividerBlot, // 分割线
 	// 'formats/header':Header, 
 	// 'formats/list': List, 
-	// 'formats/containerFlag': ContainerFlag, 
-	// 'formats/editContainer': EditContainer, 
 	// 'formats/size': SizeStyle,
 	// 'formats/font': Font,
 	// 'formats/lineHeight': lineHeightStyle,

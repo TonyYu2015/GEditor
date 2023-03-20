@@ -16,6 +16,7 @@ import PageMargins from './modules/PageBreak/components/PageMargins';
 import { SIZE_NUM } from './formats/size';
 import { FONT_TYPE } from './formats/font';
 import { lineHeightWhiteList } from './formats/lineHeight';
+import ShareDBConnection from './sharedb/sharedb';
 
 
 import ReportEditor from './report';
@@ -34,6 +35,14 @@ function useToolbar() {
 }
 
 export default function Editor(props) {
+	const hashStr = new URL(window.location.href).hash;
+	const paramStr = hashStr.split('?')[1];
+	let searchEntries = new URLSearchParams(paramStr);
+	let urlParamObj = {};
+	for (let p of searchEntries) {
+		urlParamObj[p[0]] = p[1];
+	}
+
 	const [
 		{ firstPageRenderEnd, history, pagePadding },
 		toolbarSet
@@ -50,14 +59,8 @@ export default function Editor(props) {
 				toolbarSet
 			});
 
-			let report = localStorage.getItem("delta");
-			if (report) {
-				let jsonReport = JSON.parse(report);
-				console.log(jsonReport);
-				editorInstance.current.renderReport({ newDelta: jsonReport.delta, nestContainer: jsonReport.nestContainer });
-			} else {
-				editorInstance.current.addNewPage();
-			}
+			// 支持sharedb设置
+			editorInstance.current.shareDBInstance = new ShareDBConnection(editorInstance.current, { ...urlParamObj, ID, userInfo });
 		}
 
 		return () => {
@@ -128,41 +131,45 @@ export default function Editor(props) {
 								<Menu selectable onClick={e => {
 									editorInstance.current.handleInsert(e.key);
 								}}>
-									<Menu.Item key="layout_2">two</Menu.Item>
+									<Menu.Item key="layout_2">二栏</Menu.Item>
+									{/* <Menu.Item key="layout_2-1.2">二栏偏左</Menu.Item>
+								<Menu.Item key="layout_2-2.1">二栏偏右</Menu.Item>
+								<Menu.Item key="layout_3">三栏</Menu.Item> */}
 								</Menu>
 							)}
 						>
 							<div>
-								layout
+								分栏
 							</div>
 						</Dropdown>
 					</ToolItem>
 					<ToolItem className="ql-borderpadding self_fun">
 						<PageMargins quill={editorInstance.current?.quill} reportPagePadding={pagePadding}>
-							<span>padding</span>
+							<span>页边距</span>
 						</PageMargins>
 					</ToolItem>
 					<ToolItem className="ql-pageTopandBottom self_fun">
 						<Dropdown
+							// trigger={['click']} 
+							// className="pageTopandBottom" 
 							overlay={(
 								<Menu selectable onClick={e => {
 									editorInstance.current.handleInsert(e.key);
 								}}>
-									<Menu.Item key="page-header_normal" title="header">
-										header
+									<Menu.Item key="header" title="页眉">
+										页眉
 									</Menu.Item>
-									<Menu.Item key="page-footer_normal" title="footer">
-										footer
+									<Menu.Item key="footer" title="页脚">
+										页脚
 									</Menu.Item>
 								</Menu>
 							)} >
 							<div>
-								headerFooter
+								页眉页脚
 							</div>
 						</Dropdown>
 					</ToolItem>
-					<ToolItem className="ql-save">save</ToolItem>
-					<ToolItem className="ql-clear">clear</ToolItem>
+					<ToolItem className="ql-save">保存</ToolItem>
 				</div>
 			</Affix>
 			{/* <DragDrop> */}

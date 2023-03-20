@@ -1,9 +1,13 @@
 import Quill from "quill";
-import { addDraggable, addMouseMove } from "../../common";
+import { addMouseMove, getEventComposedPath } from "../../common";
+import LayoutContextMenu from "../../components/ContextMenu";
+import { createInsertDelta } from "../../utility";
+import ContainerWrapper from "../FreeContainer/blots/containerWrapper";
 
 const Container = Quill.import("blots/outerContainer");
 const Module = Quill.import('core/module');
 const Delta = Quill.import('delta');
+
 
 /**
  * 1. move freely in a page
@@ -11,7 +15,7 @@ const Delta = Quill.import('delta');
  * 3. only text
  */
 
-class FreeText extends Container {
+class FreeText extends ContainerWrapper {
 
 	width
 	height
@@ -33,26 +37,49 @@ class FreeText extends Container {
 	}
 
 	constructor(scroll, domNode, value) {
-		super(scroll, domNode, value);	
+		super(scroll, domNode, value);
+		this.isLimitCursorRange = true;
+		const quill = Quill.find(scroll.domNode.parentNode);
 		addMouseMove(domNode);
-		domNode.addEventListener('click', (e) => {
-			e = e || window.event;
+		this.unallowedChildrenNames = ["full-width-wrapper", "materialImageContainer"];
+		let _this = this;
 
-			let rectObj = this.domNode.getBoundingClientRect();
-			let rightSpace = rectObj.left + this.domNode.clientWidth - e.clientX;
-			let bottomSpace = rectObj.top + this.domNode.clientHeight - e.clientY;
-			if(!(rightSpace > 20 && rightSpace <= 40 && bottomSpace >= 0 && bottomSpace <= 20)) return;
-			this.remove();
+		domNode.addEventListener('mouseup', (e) => {
+			_this.handleMouseUp();
 		});
+
+		/**
+		 * 添加右键菜单功能
+		 */
+		domNode.addEventListener("contextmenu", (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			let path = getEventComposedPath(e);
+			if (!path || path.length <= 0) return;
+			new LayoutContextMenu({
+				left: e.pageX,
+				top: e.pageY
+			}, quill, [
+				{
+					text: "删除",
+					clickEvt: (evt) => {
+						evt.preventDefault();
+						this.remove();
+					}
+				}
+			]);
+		}, false);
 	}
 
-	// checkMerge() {
-	// 	return false;
-	// }
+	handleMouseUp = () => {
+		if (this.children.tail?.calChildrenLen)
+			this.children.tail.calChildrenLen();
+	}
+
 
 	addFocusedChange() {
 		this.scroll.focusedContainer = this;
-		if(this.statics.blotName === 'page-container') return;
+		if (this.statics.blotName === 'page-container') return;
 		this.domNode.classList.add('ql-free-text-focused');
 	}
 
@@ -60,7 +87,7 @@ class FreeText extends Container {
 		this.domNode.classList.remove('ql-free-text-focused');
 	}
 
-	optimize(context){
+	optimize(context) {
 		super.optimize(context);
 		let curWidth = this.domNode.offsetWidth;
 		let curHeight = this.domNode.offsetHeight;
@@ -68,22 +95,38 @@ class FreeText extends Container {
 		let curLeft = this.domNode.offsetLeft;
 		let curTop = this.domNode.offsetTop;
 
-		if(this.width !== curWidth || this.height !== curHeight) {
+		if (this.width !== curWidth || this.height !== curHeight) {
 			this.width = curWidth;
 			this.height = curHeight;
-			this.attachAttrsToFlag({containerwidth: curWidth, containerheight: curHeight});
+			this.attachAttrsToFlag({ containerwidth: curWidth, containerheight: curHeight });
 		}
 
-		if(this.left !== curLeft || this.top !== curTop) {
+		if (this.left !== curLeft || this.top !== curTop) {
 			this.left = curLeft;
 			this.top = curTop;
-			this.attachAttrsToFlag({containerleft: curLeft, containertop: curTop});
+			this.attachAttrsToFlag({ containerleft: curLeft, containertop: curTop });
 		}
 
-		let firstChild = this.children.head;
-		if(firstChild && firstChild.next && !firstChild.next.domNode.getAttribute('style')) {
-			firstChild.next.domNode.setAttribute('style', 'position: relative;');
+
+		let obj = this._value;
+		let style = this.domNode.style;
+		if (curLeft != obj.containerleft) {
+			style.left = `${obj.containerleft}px`;
 		}
+
+		if (curTop != obj.containerleft) {
+			style.top = `${obj.containertop}px`;
+		}
+
+		if (curWidth != obj.containerwidth) {
+			style.width = `${obj.containerwidth}px`;
+		}
+
+		if (curHeight != obj.containerheight) {
+			style.height = `${obj.containerheight}px`;
+		}
+
+
 	}
 }
 
@@ -101,25 +144,43 @@ export default class FreeTextModule extends Module {
 		super(quill, options);
 	}
 
-	insert({index}) {
-		const quill = this.quill;	
-		const range = quill.getSelection();
-		if(!index && !range) return;
-		index = range.index || index;
-    let currentBlot = quill.getLeaf(index)[0]
-		if(this.isInFreeText(currentBlot)) return;
+	insert({ index }) {
+		const quill = this.quill;
+		// let focusedContainer = quill.scroll.focusedContainer;
+		// if (focusedContainer) {
+		// 	if (focusedContainer.statics.blotName === "full-width-wrapper") {
+		// 		let lastBlot = focusedContainer.children.tail;
+		// 		index = quill.getIndex(lastBlot);
+		// 	}
+		// }
+		if (index === -1) {
+			return;
+		}
 
-		let layoutDelta = new Delta()
-			.retain(index)
-			.insert({'container-flag': {container: FreeText.blotName} });
+		let currentBlot = quill.getLeaf(index)[0]
+		if (this.isInFreeText(currentBlot))
+			return;
 
-		console.log("====>>>>>>freetextindex", index, range, layoutDelta);
+		const [line] = quill.getLine(index);
+
+		let containerleft = 0;
+		let containertop = 0;
+		if (line) {
+			let parentContainer = line.parent;
+			if (parentContainer.statics.blotName === "page-container") {
+				let style = parentContainer.domNode.style;
+				containerleft = parseInt(style.paddingLeft);
+				let bound = quill.getBounds(index);
+				// 文本框创建Y坐标，绝对坐标转相对，20页间隔
+				containertop = bound.top - (parseInt(style.minHeight) + 20) * (parentContainer.pagenum - 1);
+			}
+		}
+		let layoutDelta = createInsertDelta(quill, index).insert({ 'block': { container: FreeText.blotName, containerleft, containertop, containerwidth: 100, containerheight: 100 } });
 		quill.updateContents(
 			layoutDelta,
 			Quill.sources.USER
 		);
-		const [line, offset] = quill.getLine(index);
-		// line.parent.addFocusedChange();
+
 	}
 
 	isInFreeText(current) {
@@ -128,5 +189,5 @@ export default class FreeTextModule extends Module {
 				? true
 				: this.isInFreeText(current.parent)
 			: false
-		}
+	}
 }

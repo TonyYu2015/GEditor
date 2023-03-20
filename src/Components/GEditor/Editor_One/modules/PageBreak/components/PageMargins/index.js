@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Modal, Row, Col, InputNumber } from "@wind/wind-ui";
-import { editSize, px2cm, cm2px } from "../../../../common";
+import { Modal, Row, Col, InputNumber } from "antd";
+import { px2cm, cm2px } from "../../../../common";
 
 import './index.less';
-import { writeUserLog } from "../../../../../../../utils/request";
 
 export default function PageMargins(props) {
 	const {
@@ -12,30 +11,17 @@ export default function PageMargins(props) {
 		reportPagePadding
 	} = props;
 	const [visible, setVisible] = useState(false);
-	const [pagePadding, setPagePadding] = useState([editSize.padding_top, editSize.padding, editSize.padding_bottom, editSize.padding]);
+	const [pagePadding, setPagePadding] = useState(reportPagePadding);
 
 	const onOk = useCallback((pagePadding, quill) => {
-		// 记录功能点
-		writeUserLog('922604650035', { type: '页边距' });
 		const pageBreak = quill.getModule('pageBreak');
 		pageBreak.updatePagePadding(pagePadding);
 		setVisible(false);
 	}, []);
 
-	// effect
-
-	useEffect(() => {
-		if(quill) {
-			const pageBreak = quill.getModule('pageBreak');
-			pageBreak.updatePagePadding(pagePadding);
-		}
-	}, [quill]);
-
 	useEffect(() => {
 		if(reportPagePadding) {
-			const pageBreak = quill.getModule('pageBreak');
 			setPagePadding(reportPagePadding);
-			pageBreak.updatePagePadding(reportPagePadding);
 		}
 	}, [reportPagePadding])
 

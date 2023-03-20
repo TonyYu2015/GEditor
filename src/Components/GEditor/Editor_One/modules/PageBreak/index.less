@@ -1,6 +1,18 @@
-.ql-page-container {
-	width: 100%;
-	position: relative;
-	background-color: #fff;
-	margin-bottom: 20px;
+.ql-editor {
+
+	.ql-page-container
+	{
+		width        : 100%;
+		position     : relative;
+		background   : #fff;
+		box-shadow   : 0 0 8px 0 rgba(0, 0, 0, 0.20);
+		border-radius: 2px 2px 0 0;
+	}
+
+	.ql-page-container:not(:first-child) {
+		margin-top: 20px;
+	}
+	.ql-page-container-noshadow {
+		box-shadow   : none;
+	}
 }
