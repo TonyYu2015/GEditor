@@ -1,2 +1,2 @@
 # A normal rich-text based on [Quill](www.quilljs.com)
-> under constructor
+> under construction
