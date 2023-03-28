@@ -1,8 +1,7 @@
 import { Layout } from "antd";
 import './App.css';
-import GEditor from "./Components/GEditor/Editor_One/index";
-// import GEditorSharedb from "./Components/GEditor/Editor_One/index_sharedb";
-// import PEditor from "./Components/PEditor/pEditor";
+import GEditor from "./Editor_One/index";
+// import GEditorSharedb from "./Editor_One/index_sharedb";
 
 const { Content } = Layout;
 
@@ -21,7 +20,6 @@ function App() {
       </Header> */}
       <Content>
         <GEditor/>
-        {/* <PEditor/> */}
       </Content>
     </Layout>
   );
