@@ -37,13 +37,20 @@ function A4Size2Px() {
 	let padding_top_inch = 0.9; // 23 / 25.4
 	let padding_bottom_inch = 0.9; // 23 / 25.4
 
+	// return {
+	// 	width: Math.round(8.27 * transformRate), // 210 / 25.4
+	// 	height: Math.round(11.69 * transformRate), // 297 / 25.4
+	// 	padding: Math.round(pageWhite_inch * transformRate),
+	// 	padding_top: Math.round(padding_top_inch * transformRate),
+	// 	padding_bottom: Math.round(padding_bottom_inch * transformRate),
+	// }
 	return {
-		width: Math.round(8.27 * transformRate), // 210 / 25.4
-		height: Math.round(11.69 * transformRate), // 297 / 25.4
-		padding: Math.round(pageWhite_inch * transformRate),
-		padding_top: Math.round(padding_top_inch * transformRate),
-		padding_bottom: Math.round(padding_bottom_inch * transformRate),
-	}
+		width: 800,
+		height: Math.round(800 * (297 / 210)),
+		padding: 60,
+		padding_top: 90,
+		padding_bottom: 90
+	};
 }
 
 export function px2cm(px) {
