@@ -115,6 +115,29 @@ applyDelta(delta) {
 		if(op.insert != null) {
 			if(typeof op.insert === 'string') {
 			// plain text
+			let text = op.insert;
+			if(text.endsWith('\n') && consumeNextNewLine) {
+				consumeNextNewLine = false;
+				text = text.slice(0, -1);
+			}
+			if(
+				(index >= scrollLength || this.scroll.descendent(BlockEmbed, index)[0])
+				&& !text.endsWith('\n')
+			) {
+				consumeNextNewLine = true;
+			}
+
+			// insert text, including insert new Blot and the dom node
+			this.scroll.insertAt(index, text);
+
+			// get formats
+			const [line, offset] = this.scroll.line(index);
+			let formats = extend({}, bubbleFormats(line));
+			if(line instancesof Block) {
+				const [leaf] = line.descendant(LeafBlot, offset);
+				formats = extend(formats, bubbleFormats(leat));
+			}
+			attributes = AttributeMap.diff(formats, attributes) || {};
 
 			} else if(typeof op.insert === 'object') {
 				// embed, here the key is the embed Blot's name, so it can be used to create new Embed Blot, but it should only be one key
