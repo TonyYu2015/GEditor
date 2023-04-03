@@ -6,7 +6,7 @@
 
 It's the basic way of how Quill run in the browser. DOM only can be drived, you should not change it, althought this behaviour also works, but it's not recommonded in the development. The Blots and Delta are work for each other, whenever one is changed, another will be updated.
 
-## What is Delta?
+## The Delta
 
 It'a data structure which is representative of editor's content, it can be stored in the database or somewhere else, and will be render to DOM content through the Scroll blot(the top blot which control the blot tree).
 
@@ -16,13 +16,13 @@ This is the [formal doc](www.github.com/quilljs/delta), it shows the very specif
 
 So you can use the above three operations to apply the Delta.
 
-## What about the Blot?
+## The Blot
 
 Every element in the editor are all Blot type, such as text, code, image, or formula. 
 
 Quill has provided some normal useful blots you can use, and also you can make a customize blot which often inherit from the basic blot in the Quill. This feature is very strong to customize your own editor.
 
-## Module, it's just like plugin, injected into Quill, and work.
+## The Module
 
 ```javascript
 const Module = Quill.import('core/module');
@@ -50,3 +50,100 @@ new Quill(
 ```
 
 You can use it like the code above, it also can strength your editor.
+
+# How the Quill render?
+
+We can call `setContents` or `updateContents` to reset the content of the editor or just update it.
+
+```javascript
+setContents(delta, source = Emitter.sources.API) {
+	return modify.call(
+		this,
+		() => {
+			delta = new Delta(delta);
+			const length = this.getLength();
+			// delete the current content in the editor
+			const deleted = this.editor.deleteText(0, length);
+			// render the editor
+			const applied = this.editor.applyDelta(delta);
+			const lastOp = applied.ops[applied.ops.length - 1];
+			if(
+				lastOp != null &&
+				typeof lastOp.insert === 'string' &&
+				lastOp.insert[lastOp.insert.length - 1] === '\n'
+				) {
+					this.editor.deletetText(this.getLength() - 1, 1);
+					applied.delete(1);
+				}
+				return deleted.compose(applied);
+		},
+		source
+	)
+}
+```
+
+```javascript
+updateContents(delta, source = Emitter.sources.API) {
+	return modify.call(
+		this,
+		() => {
+			delta = new Delta(delta);
+			// return the editor
+			return this.editor.applyDelta(delta, source);
+		},
+		source,
+		true,
+	);
+}
+```
+
+We can see that `setContents` will delete the current content firstly, then render the new content, and `updateContents` will directly render the new content.
+The `modify` is a function of handling Selection and TEXT_CHANGE common modification. `applyDelta` implemente the render process, it belongs the `Editor`. 
+
+```javascript
+applyDelta(delta) {
+	let consumeNextNewLine = true;
+	this.scroll.update();
+	let scrollLength = this.scroll.length();
+	// start
+	this.scroll.batchStart();
+	const normalizedDelta = normalizedDelta(delta);
+	normalizedDelta.reduce((index, op) =>{
+		// get current op length
+		const length = op.retain || op.delete || op.insert.length || 1;
+		let attributes = op.attributes || {};
+		if(op.insert != null) {
+			if(typeof op.insert === 'string') {
+			// plain text
+
+			} else if(typeof op.insert === 'object') {
+				// embed, here the key is the embed Blot's name, so it can be used to create new Embed Blot, but it should only be one key
+				const key = Object.keys(op.insert)[0];
+				if(key == null) return index;
+				this.scroll.insertAt(index, key, op.insert[key]);
+
+			}
+		}
+
+		Object.keys(attributes).forEach(name =>{
+			this.scroll.formatAt(index, length, name, attributes[name]);
+		});
+
+		return index + length;
+	}, 0);
+
+	// handle delete operation
+	normalizedDelta.reduce((index, op) => {
+		if(typeof op.delete === 'number') {
+			this.scroll.deleteAt(index, op.delete);
+			return index;
+		}
+		return index + (op.retain || op.insert.length || 1)
+	}, 0);
+
+ // end batch render, start next work
+	this.scroll.batchEnd();
+	this.scroll.optimize();
+	return this.update(normalizedDelta);
+}
+```
