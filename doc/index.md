@@ -101,72 +101,74 @@ We can see that `setContents` will delete the current content firstly, then rend
 The `modify` is a function of handling Selection and TEXT_CHANGE common modification. `applyDelta` implemente the render process, it belongs the `Editor`. 
 
 ```javascript
-applyDelta(delta) {
-	let consumeNextNewLine = true;
-	this.scroll.update();
-	let scrollLength = this.scroll.length();
-	// start
-	this.scroll.batchStart();
-	const normalizedDelta = normalizedDelta(delta);
-	normalizedDelta.reduce((index, op) =>{
-		// get current op length
-		const length = op.retain || op.delete || op.insert.length || 1;
-		let attributes = op.attributes || {};
-		if(op.insert != null) {
-			if(typeof op.insert === 'string') {
-			// plain text
-			let text = op.insert;
-			if(text.endsWith('\n') && consumeNextNewLine) {
-				consumeNextNewLine = false;
-				text = text.slice(0, -1);
+class Editor {
+	applyDelta(delta) {
+		let consumeNextNewLine = true;
+		this.scroll.update();
+		let scrollLength = this.scroll.length();
+		// start batch, which means generate the Dom node and insert them into the document, and current DOM is flat, only contains content, havn't been wrappered by containers, this action will happen in the `optimize` stage. 
+		this.scroll.batchStart();
+		const normalizedDelta = normalizedDelta(delta);
+		normalizedDelta.reduce((index, op) =>{
+			// get current op length
+			const length = op.retain || op.delete || op.insert.length || 1;
+			let attributes = op.attributes || {};
+			if(op.insert != null) {
+				if(typeof op.insert === 'string') {
+				// plain text
+				let text = op.insert;
+				if(text.endsWith('\n') && consumeNextNewLine) {
+					consumeNextNewLine = false;
+					text = text.slice(0, -1);
+				}
+				if(
+					(index >= scrollLength || this.scroll.descendent(BlockEmbed, index)[0])
+					&& !text.endsWith('\n')
+				) {
+					consumeNextNewLine = true;
+				}
+
+				// insert text, including insert new Blot and the dom node
+				this.scroll.insertAt(index, text);
+
+				// get formats
+				const [line, offset] = this.scroll.line(index);
+				let formats = extend({}, bubbleFormats(line));
+				if(line instancesof Block) {
+					const [leaf] = line.descendant(LeafBlot, offset);
+					formats = extend(formats, bubbleFormats(leat));
+				}
+				attributes = AttributeMap.diff(formats, attributes) || {};
+
+				} else if(typeof op.insert === 'object') {
+					// embed, here the key is the embed Blot's name, so it can be used to create new Embed Blot, but it should only be one key
+					const key = Object.keys(op.insert)[0];
+					if(key == null) return index;
+					this.scroll.insertAt(index, key, op.insert[key]);
+
+				}
 			}
-			if(
-				(index >= scrollLength || this.scroll.descendent(BlockEmbed, index)[0])
-				&& !text.endsWith('\n')
-			) {
-				consumeNextNewLine = true;
+
+			Object.keys(attributes).forEach(name =>{
+				this.scroll.formatAt(index, length, name, attributes[name]);
+			});
+
+			return index + length;
+		}, 0);
+
+		// handle delete operation
+		normalizedDelta.reduce((index, op) => {
+			if(typeof op.delete === 'number') {
+				this.scroll.deleteAt(index, op.delete);
+				return index;
 			}
+			return index + (op.retain || op.insert.length || 1)
+		}, 0);
 
-			// insert text, including insert new Blot and the dom node
-			this.scroll.insertAt(index, text);
-
-			// get formats
-			const [line, offset] = this.scroll.line(index);
-			let formats = extend({}, bubbleFormats(line));
-			if(line instancesof Block) {
-				const [leaf] = line.descendant(LeafBlot, offset);
-				formats = extend(formats, bubbleFormats(leat));
-			}
-			attributes = AttributeMap.diff(formats, attributes) || {};
-
-			} else if(typeof op.insert === 'object') {
-				// embed, here the key is the embed Blot's name, so it can be used to create new Embed Blot, but it should only be one key
-				const key = Object.keys(op.insert)[0];
-				if(key == null) return index;
-				this.scroll.insertAt(index, key, op.insert[key]);
-
-			}
-		}
-
-		Object.keys(attributes).forEach(name =>{
-			this.scroll.formatAt(index, length, name, attributes[name]);
-		});
-
-		return index + length;
-	}, 0);
-
-	// handle delete operation
-	normalizedDelta.reduce((index, op) => {
-		if(typeof op.delete === 'number') {
-			this.scroll.deleteAt(index, op.delete);
-			return index;
-		}
-		return index + (op.retain || op.insert.length || 1)
-	}, 0);
-
- // end batch render, start next work
-	this.scroll.batchEnd();
-	this.scroll.optimize();
-	return this.update(normalizedDelta);
+	// end batch render, start next work
+		this.scroll.batchEnd();
+		this.scroll.optimize();
+		return this.update(normalizedDelta);
+	}
 }
 ```
