@@ -61,6 +61,8 @@ export default class FullWidthModule extends Module {
 
 	insert({ index }) {
 		const quill = this.quill;
+		const range = quill.getSelection();
+		index = range ? range.index : index;
 		if (index === -1) {
 			return;
 		}

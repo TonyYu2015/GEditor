@@ -1,4 +1,4 @@
-# Update
+# Update and Optimize
 
 ```javascript
 // quill/blots/scroll.js

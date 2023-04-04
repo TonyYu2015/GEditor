@@ -1,5 +1,4 @@
 import Quill from './register';
-// import Quill from 'quill';
 import QUEUE from './idleQueue';
 import { ResizeObserverBlotModule } from './resizeObserver';
 import NestContainerManager from "./nestContainerManager";
@@ -58,6 +57,26 @@ export default class ReportEditor {
 							// 		{insert: { [DIVIDER_BLOT_NAME]: true }},
 							// 	])
 							// },
+							header() {
+								const pageBreak = this.quill.getModule("pageBreak");
+								pageBreak.updateHeaderOrFooter("page-header_normal");
+							},
+							footer() {
+								const pageBreak = this.quill.getModule("pageBreak");
+								pageBreak.updateHeaderOrFooter("page-footer_normal");
+							},
+							layout() {
+								const layout = this.quill.getModule("layout");
+								layout.insertLayout({span: "2-layout"});
+							},
+							freeText() {
+								const freeText = this.quill.getModule("freeText");
+								freeText.insert({});
+							},
+							fullWidth() {
+								const fullWidth = this.quill.getModule("fullWidth");
+								fullWidth.insert({});
+							},
 							formatBrush: function () {
 								const formatBrush = this.quill.getModule('formatBrush');
 								formatBrush.toogleFormat();
@@ -128,12 +147,11 @@ export default class ReportEditor {
 		quill.NestContainerManager.initial(nestContainer);
 		quill.isLoadingRender = true;
 
-		let len = this.quill.getLength();
+		// let len = this.quill.getLength();
 		let delta = new Delta();
-		delta.retain(0).delete(len);
+		// delta.retain(0).delete(len);
 		quill.updateContents(delta.retain(0).concat(new Delta(newDelta)).delete(1), Quill.sources.API);
 		quill.isLoadingRender = false;
-		this.setFirstPageRenderEnd(true);
 		pageBreak.HeaderFooterManager.initialize();
 
 		let history = quill.getModule('history');
@@ -146,7 +164,6 @@ export default class ReportEditor {
 		const pageBreak = this.quill.getModule('pageBreak');
 		pageBreak._genOnePage();
 		quill.isLoadingRender = false;
-		this.setFirstPageRenderEnd(true);
 	}
 
 	undo() {
@@ -155,26 +172,6 @@ export default class ReportEditor {
 
 	redo() {
 		this.quill.history.redo();
-	}
-
-	handleInsert(key) {
-		if (~key.indexOf('layout')) {
-			const layout = this.quill.getModule('layout');
-			layout.insertLayout({ span: key.split("_")[1], index: this.lastSelectionIndex });
-		} else {
-			const pageBreak = this.quill.getModule('pageBreak');
-			pageBreak.updateHeaderOrFooter(key);
-		}
-	}
-
-	handleFreeTextInsert() {
-		const freeText = this.quill.getModule('freeText');
-		freeText.insert({ index: this.lastSelectionIndex });
-	}
-
-	handleFullWidthInsert() {
-		const fullWidth = this.quill.getModule('fullWidth');
-		fullWidth.insert({ index: this.lastSelectionIndex });
 	}
 
 	downloadPic(blob, name) {

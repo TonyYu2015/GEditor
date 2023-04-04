@@ -12,12 +12,6 @@ function App() {
         background: "#fff"
       }}
     >
-      {/* <Header>
-        <Menu
-          mode="horizontal"
-          items={MENU_ITEMS}
-        />
-      </Header> */}
       <Content>
         <GEditor/>
       </Content>

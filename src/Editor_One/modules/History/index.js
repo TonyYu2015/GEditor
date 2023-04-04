@@ -24,14 +24,7 @@ class History extends _History {
 			return;
 		}
 
-		if (isAttr) {
-		} else {
-			if (changeDelta?.ops?.length > 0) {
-			} else {
-				return;
-			}
-		}
-
+		if(!isAttr && changeDelta?.ops?.length <= 0) return;
 
 		let time = new Date().getTime();
 		let isMerge = false;

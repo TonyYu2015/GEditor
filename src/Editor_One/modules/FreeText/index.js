@@ -147,6 +147,8 @@ export default class FreeTextModule extends Module {
 		// 		index = quill.getIndex(lastBlot);
 		// 	}
 		// }
+		const range = quill.getSelection();
+		index = range ? range.index : index;
 		if (index === -1) {
 			return;
 		}

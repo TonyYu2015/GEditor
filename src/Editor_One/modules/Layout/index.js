@@ -111,6 +111,8 @@ export default class Layout extends Module {
 
 	insertLayout({ span, index }) {
 		const quill = this.quill;
+		const range = quill.getSelection();
+		index = range ? range.index : index;
 		if (index === -1) {
 			return;
 		}
