@@ -6,12 +6,10 @@ import { overRideKeyBoard } from './modules/KeyBoard';
 import CustomImageSpec from './formats/CustomImageSpec'
 
 let Delta = Quill.import('delta');
-// const Image = Quill.import('formats/image');
 
 export default class ReportEditor {
 	constructor(initialInfo) {
 		this.initialInfo = initialInfo;
-		this.setFirstPageRenderEnd = initialInfo.toolbarSet.setFirstPageRenderEnd;
 		this.initialQuill();
 		this.preventFocusScroll();
 	}
@@ -21,7 +19,6 @@ export default class ReportEditor {
 			container,
 			toolbar,
 			moduleOptions = {},
-			urlParamObj,
 			toolbarSet,
 		} = this.initialInfo;
 		const _this = this;
