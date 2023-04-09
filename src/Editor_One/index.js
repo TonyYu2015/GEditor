@@ -1,23 +1,33 @@
 import React, { useState, useEffect, useRef } from "react";
-import { UndoOutlined, RedoOutlined, FormatPainterOutlined } from "@ant-design/icons";
-// import 'react-resizable/css/styles.css';
-
-import 'quill/dist/quill.snow.css';
-// import 'quill-better-table/src/assets/quill-better-table.scss';
-
-import './index.less';
-
 import { editSize } from './common';
 import PageMargins from './modules/PageBreak/components/PageMargins';
-
 import { SIZE_NUM } from './formats/size';
 import { FONT_TYPE } from './formats/font';
 import { lineHeightWhiteList } from './formats/lineHeight';
-
-
 import ReportEditor from './report';
+import 'quill/dist/quill.snow.css';
+import './index.less';
 
 const FONT_COLORS = ["#000000", "#e60000", "#ff9900", "#ffff00", "#008a00", "#0066cc", "#9933ff", "#ffffff", "#facccc"];
+
+const COMMON_STYLE = {
+	width: 'auto',
+	height: 'auto',
+}
+
+function ToolItem(props) {
+	const {
+		children
+	} = props;
+
+
+	return (
+		<button
+			style={{ ...COMMON_STYLE }}
+			{...props}
+		>{children}</button>
+	)
+}
 
 function useToolbar() {
 	const [history, setHistory] = useState({ undo: false, redo: false });
@@ -67,13 +77,10 @@ export default function Editor(props) {
 		<div className="edit-wrapper" >
 			<div id="ql-toolbar">
 				<ToolItem className={`ql-undo${history.undo ? "" : " forbidden"}`} onClick={_ => editorInstance.current.undo()}>
-					<UndoOutlined />
+					Undo
 				</ToolItem>
 				<ToolItem className={`ql-redo${history.redo ? "" : " forbidden"}`} onClick={_ => editorInstance.current.redo()}>
-					<RedoOutlined />
-				</ToolItem>
-				<ToolItem className="ql-formatBrush">
-					<FormatPainterOutlined />
+					Redo
 				</ToolItem>
 				<button className="ql-italic" />
 				<button className="ql-underline" />
@@ -144,22 +151,3 @@ export default function Editor(props) {
 	)
 }
 
-
-const COMMON_STYLE = {
-	width: 'auto',
-	height: 'auto',
-}
-
-function ToolItem(props) {
-	const {
-		children
-	} = props;
-
-
-	return (
-		<button
-			style={{ ...COMMON_STYLE }}
-			{...props}
-		>{children}</button>
-	)
-}

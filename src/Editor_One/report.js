@@ -74,10 +74,6 @@ export default class ReportEditor {
 								const fullWidth = this.quill.getModule("fullWidth");
 								fullWidth.insert({});
 							},
-							formatBrush: function () {
-								const formatBrush = this.quill.getModule('formatBrush');
-								formatBrush.toogleFormat();
-							},
 							save() {
 								let delta = this.quill.getContents();
 								localStorage.setItem("delta", JSON.stringify({
