@@ -1,7 +1,6 @@
 import Quill from "quill";
 import { genId } from "../../../common";
-import { CMD_TYPES, FUNCTION_NAMES } from "../../../consts";
-import { isDebugFunction } from "../../../utility";
+import { CMD_TYPES } from "../../../consts";
 import KeyBoard, { addKeyBinding } from "../../KeyBoard";
 import withWrapper from '../_withWrapper';
 
@@ -16,7 +15,6 @@ export function withContainer(container) {
 			super(scroll, domNode, value);
 			this._value = {};
 			this.isLimitCursorRange = false;
-			// 是否next为空时自动添加block
 			this.autoAddNextBlock = false;
 			this.unallowedChildrenNames = [];
 			this.isLimitRemove = true;
@@ -79,7 +77,6 @@ export function withContainer(container) {
 				&& childTail.autoAddNextBlock
 				&& !childTail.next
 				&& !this.quill.isLoadingRender) {
-				// console.log("autoAddNextBlock");
 				let block = this.scroll.create('block');
 				this.appendChild(block);
 			}
@@ -89,7 +86,6 @@ export function withContainer(container) {
 			let container = this.getContainer(this);
 			if (container) {
 				if (container.unallowedChildrenNames?.includes(this.statics.blotName)) {
-					// console.log("remove", this.statics.blotName);
 					return false;
 				}
 			}
@@ -185,9 +181,6 @@ export function withContainer(container) {
 				this.attrNext = next;
 				setTimeout(() => {
 					let history = this.quill.getModule("history");
-					if (isDebugFunction(FUNCTION_NAMES.UNDO_REDO)) {
-						console.log("add attr record---\n" + JSON.stringify([{ prev: this.attrPrev, next: this.attrNext }]));
-					}
 					// history.record([{ prev: this.attrPrev, next: this.attrNext }]);
 					history.record(null, null, true);
 					this.isAttrChangeRecording = false;
@@ -196,9 +189,6 @@ export function withContainer(container) {
 				}, 1000);
 			} else {
 				this.attrNext = next;
-				if (isDebugFunction(FUNCTION_NAMES.UNDO_REDO)) {
-					console.log("attr wait record, next：" + JSON.stringify(next));
-				}
 			}
 		}
 
