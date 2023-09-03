@@ -45,6 +45,7 @@
     "quill": "^2.0.0-dev.4",
     "quill-better-table": "^1.2.10",
     "quill-blot-formatter": "^1.0.5",
+    "quill-delta": "^5.1.0",
     "quill-image-drop-module": "^1.0.3",
     "react": "^18.2.0",
     "react-app-polyfill": "^3.0.0",
